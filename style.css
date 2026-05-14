@@ -151,6 +151,9 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   font-size:1.35rem;line-height:1
 }
 .spick:hover{background:var(--card)}
+.spick svg{width:26px;height:26px;pointer-events:none;display:block}
+.stk-sv{width:44px;height:44px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.stk-sv svg{width:44px;height:44px;pointer-events:none}
 
 .srow{display:flex;align-items:center;gap:7px;margin-top:7px}
 .srow label{font-size:.72rem;color:var(--muted);white-space:nowrap;min-width:68px}
