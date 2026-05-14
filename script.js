@@ -1,3 +1,17 @@
+// ═══ PAGE THEMES ═══
+const PG_THEMES = {
+  kosmik:   {'--bg':'#0f0f1a','--panel':'#16213e','--card':'#1a2744','--accent':'#f0c27f','--red':'#e94560','--text':'#e8e8f0','--muted':'#7788aa','--border':'#2a3a5a'},
+  oltin:    {'--bg':'#0c0900','--panel':'#1c1500','--card':'#2a1e00','--accent':'#d4a853','--red':'#cc3333','--text':'#f0e8d0','--muted':'#8a7850','--border':'#382c00'},
+  binafsha: {'--bg':'#0c0010','--panel':'#1a0028','--card':'#250038','--accent':'#c084fc','--red':'#ff3d7f','--text':'#f0e8ff','--muted':'#9070b8','--border':'#3d0060'},
+  yashil:   {'--bg':'#040c07','--panel':'#0c1c10','--card':'#122218','--accent':'#52d68a','--red':'#ff5252','--text':'#d8f2e4','--muted':'#50886a','--border':'#1a3824'},
+};
+function setPgTheme(name,btn){
+  const t=PG_THEMES[name];if(!t)return;
+  Object.entries(t).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  document.querySelectorAll('.tcard').forEach(x=>x.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+}
+
 // ═══ NAV ═══
 function goPg(name, btn) {
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));

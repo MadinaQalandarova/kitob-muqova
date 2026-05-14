@@ -63,6 +63,49 @@
 
   <div class="ctrl">
 
+    <!-- Rang mavzusi -->
+    <div class="cs">
+      <div class="cl">Rang mavzusi</div>
+      <div class="tgrid">
+        <button class="tcard on" onclick="setPgTheme('kosmik',this)">
+          <div class="tprev">
+            <div style="flex:1;background:#0f0f1a"></div>
+            <div style="flex:1;background:#16213e"></div>
+            <div style="flex:1;background:#f0c27f"></div>
+            <div style="flex:1;background:#e94560"></div>
+          </div>
+          <span>Kosmik Ko'k</span>
+        </button>
+        <button class="tcard" onclick="setPgTheme('oltin',this)">
+          <div class="tprev">
+            <div style="flex:1;background:#0c0900"></div>
+            <div style="flex:1;background:#1c1500"></div>
+            <div style="flex:1;background:#d4a853"></div>
+            <div style="flex:1;background:#cc3333"></div>
+          </div>
+          <span>Tun Oltin</span>
+        </button>
+        <button class="tcard" onclick="setPgTheme('binafsha',this)">
+          <div class="tprev">
+            <div style="flex:1;background:#0c0010"></div>
+            <div style="flex:1;background:#1a0028"></div>
+            <div style="flex:1;background:#c084fc"></div>
+            <div style="flex:1;background:#ff3d7f"></div>
+          </div>
+          <span>Sehrli Binafsha</span>
+        </button>
+        <button class="tcard" onclick="setPgTheme('yashil',this)">
+          <div class="tprev">
+            <div style="flex:1;background:#040c07"></div>
+            <div style="flex:1;background:#0c1c10"></div>
+            <div style="flex:1;background:#52d68a"></div>
+            <div style="flex:1;background:#ff5252"></div>
+          </div>
+          <span>O'rmon Yashil</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Janr -->
     <div class="cs">
       <div class="cl">Janr shabloni</div>
@@ -88,14 +131,14 @@
     <div class="cs">
       <div class="cl">Fon mavzusi</div>
       <div class="crow" id="th-row">
-        <button class="chip on" onclick="setTheme('night',this)">🌙 Tun</button>
-        <button class="chip" onclick="setTheme('fire',this)">🔥 Olov</button>
-        <button class="chip" onclick="setTheme('ocean',this)">🌊 Okean</button>
-        <button class="chip" onclick="setTheme('forest',this)">🌲 O'rmon</button>
-        <button class="chip" onclick="setTheme('gold',this)">✨ Oltin</button>
-        <button class="chip" onclick="setTheme('rose',this)">🌹 Atirgul</button>
-        <button class="chip" onclick="setTheme('purple',this)">💜 Sehrli</button>
-        <button class="chip" onclick="setTheme('mono',this)">⬛ Mono</button>
+        <button class="chip on" onclick="setTheme('night',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Tun</button>
+        <button class="chip" onclick="setTheme('fire',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>Olov</button>
+        <button class="chip" onclick="setTheme('ocean',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>Okean</button>
+        <button class="chip" onclick="setTheme('forest',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12M4 12l8-8 8 8M4 17l8-8 8 8"/></svg>O'rmon</button>
+        <button class="chip" onclick="setTheme('gold',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>Oltin</button>
+        <button class="chip" onclick="setTheme('rose',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"/></svg>Atirgul</button>
+        <button class="chip" onclick="setTheme('purple',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.5V22h3.5L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/></svg>Sehrli</button>
+        <button class="chip" onclick="setTheme('mono',this)"><svg viewBox="0 0 24 24" fill="currentColor" opacity=".8"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Mono</button>
       </div>
     </div>
 
@@ -201,17 +244,18 @@
         </div>
       </div>
 
-      <div class="cl" style="margin-top:10px">Tez naqsh (9 xil)</div>
+      <div class="cl" style="margin-top:10px">Tez naqsh</div>
       <div class="crow">
-        <button class="chip" onclick="dPat('stars')">★ Yulduz</button>
-        <button class="chip" onclick="dPat('dots')">· Nuqta</button>
-        <button class="chip" onclick="dPat('lines')">— Chiziq</button>
-        <button class="chip" onclick="dPat('waves')">〜 To'lqin</button>
-        <button class="chip" onclick="dPat('border')">▭ Chegara</button>
-        <button class="chip" onclick="dPat('diamonds')">◆ Olmos</button>
-        <button class="chip" onclick="dPat('grid')">⊞ Katakcha</button>
-        <button class="chip" onclick="dPat('zigzag')">∧ Zigzag</button>
-        <button class="chip" onclick="dPat('circles')">○ Doiralar</button>
+        <button class="chip" onclick="dPat('stars')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Yulduz</button>
+        <button class="chip" onclick="dPat('dots')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg>Nuqta</button>
+        <button class="chip" onclick="dPat('lines')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/></svg>Chiziq</button>
+        <button class="chip" onclick="dPat('waves')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M2 12c2-6 4-6 6 0s4 6 6 0 4-6 6 0"/></svg>To'lqin</button>
+        <button class="chip" onclick="dPat('border')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>Chegara</button>
+        <button class="chip" onclick="dPat('diamonds')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M12 2l10 10-10 10L2 12z"/></svg>Olmos</button>
+        <button class="chip" onclick="dPat('grid')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Katakcha</button>
+        <button class="chip" onclick="dPat('zigzag')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,12 7,6 12,12 17,6 22,12"/></svg>Zigzag</button>
+        <button class="chip" onclick="dPat('circles')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="7" cy="8" r="4"/><circle cx="17" cy="8" r="4"/><circle cx="7" cy="17" r="4"/><circle cx="17" cy="17" r="4"/></svg>Doiralar</button>
+        <button class="chip danger" onclick="clrCanvas()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Tozalash</button>
       </div>
     </div>
 
@@ -220,11 +264,6 @@
       <div class="cl">Stikerlar — bosing → qo'shiladi</div>
       <div class="scats" id="scats"></div>
       <div class="sgrid" id="sgrid"></div>
-      <div style="margin-top:6px;font-size:.68rem;color:var(--muted);line-height:1.5">
-        🖱 Bir marta bosing → tanlash (qizil ✕ tugmasi chiqadi)<br>
-        🖱🖱 Ikki marta bosing → o'chirish<br>
-        Sudrab istalgan joyga joylashtiring
-      </div>
     </div>
 
   </div>
@@ -246,12 +285,16 @@
   </div>
   <div class="wm">
     <div class="wbar">
-      <span style="font-size:.77rem;color:var(--muted)">Bob:</span>
-      <input type="text" id="ch-inp" value="Birinchi bob" oninput="updChT(this.value)" style="max-width:230px"/>
-      <button class="btn" onclick="fmt('bold')" title="Qalin"><b style="font-size:.82rem">B</b></button>
-      <button class="btn" onclick="fmt('italic')" title="Kursiv"><i style="font-size:.82rem">I</i></button>
-      <button class="btn" onclick="fmt('underline')" title="Tagiziq"><u style="font-size:.82rem">U</u></button>
-      <select onchange="fmtF(this.value);this.value=''" style="max-width:120px">
+      <span class="wlbl">Bob:</span>
+      <input type="text" id="ch-inp" value="Birinchi bob" oninput="updChT(this.value)"/>
+      <div class="wc" id="wc">0 so'z</div>
+    </div>
+    <div class="wbar2">
+      <button class="btn wfmt" onclick="fmt('bold')" title="Qalin"><b>B</b></button>
+      <button class="btn wfmt" onclick="fmt('italic')" title="Kursiv"><i>I</i></button>
+      <button class="btn wfmt" onclick="fmt('underline')" title="Tagiziq"><u>U</u></button>
+      <div class="wdiv"></div>
+      <select onchange="fmtF(this.value);this.value=''" style="max-width:130px">
         <option value="">Shrift...</option>
         <option value="Merriweather,serif">Merriweather</option>
         <option value="'Playfair Display',serif">Playfair</option>
@@ -264,14 +307,13 @@
         <option value="'Cormorant Garamond',serif">Cormorant</option>
         <option value="'Dancing Script',cursive">Dancing Script</option>
       </select>
-      <select onchange="fmtSz(this.value);this.value=''" style="max-width:78px">
+      <select onchange="fmtSz(this.value);this.value=''" style="max-width:90px">
         <option value="">O'lcham...</option>
         <option value="2">Kichik</option>
         <option value="3">O'rta</option>
         <option value="4">Katta</option>
         <option value="5">Juda katta</option>
       </select>
-      <div class="wc" id="wc">0 so'z</div>
     </div>
     <div class="wwrap">
       <div class="wpage" id="wed" contenteditable="true"
@@ -364,11 +406,11 @@
     <div class="cs">
       <div class="cl">Tez uslub</div>
       <div class="crow">
-        <button class="chip" onclick="apStl('classic')">📜 Klassik</button>
-        <button class="chip" onclick="apStl('modern')">🔷 Zamonaviy</button>
-        <button class="chip" onclick="apStl('elegant')">🌸 Nafis</button>
-        <button class="chip" onclick="apStl('dark')">🌑 Qora</button>
-        <button class="chip" onclick="apStl('light')">☀️ Yorug'</button>
+        <button class="chip" onclick="apStl('classic')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>Klassik</button>
+        <button class="chip" onclick="apStl('modern')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Zamonaviy</button>
+        <button class="chip" onclick="apStl('elegant')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"/></svg>Nafis</button>
+        <button class="chip" onclick="apStl('dark')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Qora</button>
+        <button class="chip" onclick="apStl('light')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Yorug'</button>
       </div>
     </div>
 
