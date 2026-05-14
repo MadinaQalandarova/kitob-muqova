@@ -37,28 +37,39 @@
 <div class="row">
 
   <div class="prev">
-    <div class="cwrap">
-      <div id="cover">
-        <div class="spine"></div>
-        <div id="cbg"></div>
-        <div class="ctop">
-          <div id="cv-title">Kitob Nomi</div>
-          <div id="cv-sub">Sarlavha</div>
-          <div class="cln"></div>
-        </div>
-        <div class="cmid"><div id="cv-quote">Iqtibos yoki tavsif...</div></div>
-        <div class="cbot">
-          <div class="cln"></div>
-          <div id="cv-author">Muallif Ismi</div>
-          <div id="cv-pub">Nashriyot</div>
+    <div class="book-scene">
+      <div class="book-wrap" id="book-wrap">
+        <div class="face-spine"><span class="face-spine-txt">Kitob Studio</span></div>
+        <div id="cover">
+          <div class="spine"></div>
+          <div id="cbg"></div>
+          <div class="cv-drag" id="cg-top" style="top:28px;left:22px">
+            <div id="cv-title">Kitob Nomi</div>
+            <div id="cv-sub">Sarlavha</div>
+            <div class="cln"></div>
+          </div>
+          <div class="cv-drag" id="cg-mid" style="top:188px;left:22px;text-align:center">
+            <div id="cv-quote">Iqtibos yoki tavsif...</div>
+          </div>
+          <div class="cv-drag" id="cg-bot" style="top:358px;left:22px">
+            <div class="cln"></div>
+            <div id="cv-author">Muallif Ismi</div>
+            <div id="cv-pub">Nashriyot</div>
+          </div>
+          <canvas id="dcanvas" width="300" height="430"></canvas>
         </div>
       </div>
-      <canvas id="dcanvas" width="300" height="430"></canvas>
     </div>
-    <button class="btn pri bfull" style="max-width:300px" onclick="dlCover()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      PNG sifatida saqlash
-    </button>
+    <div style="display:flex;gap:8px;max-width:300px;width:100%">
+      <button class="btn" id="btn3d" onclick="tog3D(this)" title="3D ko'rinish" style="flex-shrink:0;padding:7px 14px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        3D
+      </button>
+      <button class="btn pri bfull" onclick="dlCover()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG saqlash
+      </button>
+    </div>
   </div>
 
   <div class="ctrl">

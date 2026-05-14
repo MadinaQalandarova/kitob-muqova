@@ -227,13 +227,51 @@ function makeDrag(el){
   });
 }
 
+// ═══ 3D BOOK ═══
+let is3D=false;
+function tog3D(btn){
+  is3D=!is3D;
+  document.getElementById('book-wrap').classList.toggle('is-3d',is3D);
+  if(btn){btn.classList.toggle('on',is3D);btn.title=is3D?"2D ko'rinish":"3D ko'rinish";}
+}
+
+// ═══ DRAGGABLE TEXT GROUPS ═══
+function makeCvDrag(id){
+  const el=document.getElementById(id);if(!el)return;
+  let ox,oy,sx,sy;
+  el.addEventListener('mousedown',e=>{
+    if(drawOn||eraseOn)return;
+    e.stopPropagation();
+    ox=el.offsetLeft;oy=el.offsetTop;sx=e.clientX;sy=e.clientY;
+    el.classList.add('dragging');
+    const cover=document.getElementById('cover');
+    const cw=cover.offsetWidth,ch=cover.offsetHeight;
+    const mv=m=>{
+      let nx=ox+m.clientX-sx,ny=oy+m.clientY-sy;
+      nx=Math.max(0,Math.min(nx,cw-el.offsetWidth));
+      ny=Math.max(0,Math.min(ny,ch-el.offsetHeight));
+      el.style.left=nx+'px';el.style.top=ny+'px';
+    };
+    const up=()=>{
+      el.classList.remove('dragging');
+      document.removeEventListener('mousemove',mv);
+      document.removeEventListener('mouseup',up);
+    };
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  });
+}
+
 // ═══ DOWNLOAD ═══
 function dlCover(){
   document.querySelectorAll('.stk').forEach(s=>s.classList.remove('sel'));
   const wasD=drawOn,wasE=eraseOn;
   drawOn=false;eraseOn=false;cv.classList.remove('on');
+  const bw=document.getElementById('book-wrap');
+  const had3d=bw&&bw.classList.contains('is-3d');
+  if(had3d)bw.classList.remove('is-3d');
   html2canvas(document.getElementById('cover'),{scale:3,useCORS:true,logging:false}).then(c=>{
     const a=document.createElement('a');a.download='kitob_muqovasi.png';a.href=c.toDataURL();a.click();
+    if(had3d)bw.classList.add('is-3d');
     if(wasD)togDraw();if(wasE)togErase();
   });
 }
@@ -282,3 +320,4 @@ function apDes(){
 
 // ═══ INIT ═══
 initGenres();initStk();initWrite();
+['cg-top','cg-mid','cg-bot'].forEach(makeCvDrag);
