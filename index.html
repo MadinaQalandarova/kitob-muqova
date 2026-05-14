@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kitob Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Dancing+Script:wght@700&family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Lobster&family=Oswald:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nav:58px;--bg:#0f0f1a;--panel:#16213e;--card:#1a2744;
+  --accent:#f0c27f;--red:#e94560;--text:#e8e8f0;--muted:#7788aa;--border:#2a3a5a;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── TWEMOJI ── */
+img.emoji{height:1.1em;width:1.1em;margin:0 .05em 0 .1em;vertical-align:-.15em;display:inline-block;pointer-events:none}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav);
+  background:rgba(15,15,26,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:1000
+}
+.brand{font-size:1.05rem;font-weight:800;color:var(--accent);letter-spacing:1px}
+.tabs{display:flex;gap:4px;background:var(--card);border-radius:10px;padding:4px}
+.tab{
+  padding:6px 16px;border-radius:7px;border:none;background:transparent;
+  color:var(--muted);font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:all .18s;font-family:inherit;white-space:nowrap
+}
+.tab.on{background:var(--accent);color:var(--bg)}
+.tab:hover:not(.on){color:var(--text);background:var(--border)}
+
+/* ── PAGES ── */
+.pg{display:none;padding-top:var(--nav);min-height:100vh}.pg.on{display:block}
+
+/* ── LAYOUTS ── */
+.row{display:flex;height:calc(100vh - var(--nav));overflow:hidden}
+.prev{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#08080f;overflow:auto;padding:28px;gap:14px}
+.ctrl{width:310px;background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+
+/* ── COVER ── */
+.cwrap{position:relative;width:300px;height:430px;flex-shrink:0}
+#cover{
+  width:300px;height:430px;border-radius:4px 12px 12px 4px;
+  box-shadow:-6px 6px 20px rgba(0,0,0,.7),8px 8px 40px rgba(0,0,0,.5);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  justify-content:space-between;padding:28px 22px 20px;
+  background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+  font-family:'Playfair Display',serif;color:#fff;transition:transform .3s
+}
+#cover:hover{transform:scale(1.01) rotate(-.3deg)}
+.spine{position:absolute;left:0;top:0;bottom:0;width:8px;background:rgba(0,0,0,.3);z-index:1}
+#cbg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.35;transition:opacity .3s}
+.ctop,.cbot{position:relative;z-index:5}
+.cmid{position:relative;z-index:5;flex:1;display:flex;align-items:center;justify-content:center}
+#cv-title{font-size:1.85rem;font-weight:900;line-height:1.15;word-break:break-word;text-shadow:0 2px 8px rgba(0,0,0,.7)}
+#cv-sub{font-size:.88rem;font-style:italic;margin-top:6px;opacity:.85}
+.cln{height:2px;background:currentColor;opacity:.3;margin:8px 0;border-radius:2px}
+#cv-quote{font-size:.78rem;text-align:center;font-style:italic;opacity:.65;padding:0 8px}
+#cv-author{font-size:.92rem;font-weight:700;letter-spacing:1px}
+#cv-pub{font-size:.63rem;opacity:.5;margin-top:3px;letter-spacing:1px;text-transform:uppercase}
+
+/* canvas */
+#dcanvas{position:absolute;inset:0;z-index:20;pointer-events:none;cursor:crosshair;border-radius:4px 12px 12px 4px}
+#dcanvas.on{pointer-events:all}
+
+/* stickers on cover */
+.stk{
+  position:absolute;z-index:15;cursor:move;user-select:none;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .1s;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))
+}
+.stk:hover{transform:scale(1.15)}
+.stk.sel{outline:2px dashed rgba(255,255,255,.5);outline-offset:2px;border-radius:4px}
+.stk img{width:32px;height:32px;display:block;pointer-events:none}
+
+/* ── COMMON CONTROLS ── */
+.cs{border-bottom:1px solid var(--border);padding-bottom:11px}
+.cl{font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:7px;font-weight:800}
+.cm{font-size:.75rem;color:var(--muted);margin-bottom:3px;display:block}
+input[type=text],textarea,select{
+  width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);
+  border-radius:8px;padding:7px 10px;font-size:.82rem;font-family:inherit;outline:none;transition:border-color .2s
+}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:44px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.crow{display:flex;flex-wrap:wrap;gap:5px}
+.chip{
+  padding:4px 9px;border-radius:20px;border:1px solid var(--border);background:var(--card);
+  color:var(--muted);font-size:.72rem;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:800}
+.sw{
+  width:22px;height:22px;border-radius:50%;border:2px solid transparent;
+  cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0
+}
+.sw:hover,.sw.on{transform:scale(1.3);border-color:#fff}
+.btn{
+  padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-size:.77rem;cursor:pointer;transition:all .15s;font-family:inherit
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.pri{background:linear-gradient(135deg,var(--red),var(--accent));color:var(--bg);font-weight:800;border:none}
+.pri:hover{opacity:.9;transform:translateY(-1px)}
+.bfull{width:100%}
+
+/* genre grid */
+.ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.gbtn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 3px;
+  border-radius:9px;border:1px solid var(--border);background:var(--card);
+  cursor:pointer;transition:all .15s;font-family:inherit
+}
+.gbtn:hover,.gbtn.on{border-color:var(--accent);background:rgba(240,194,127,.1)}
+.gicon{font-size:0;line-height:0;display:flex;align-items:center;justify-content:center}
+.gicon img{width:24px;height:24px}
+.gname{font-size:.6rem;color:var(--muted)}
+
+/* draw */
+.drow{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.dtb{
+  padding:5px 8px;border-radius:7px;border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-size:.72rem;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:4px
+}
+.dtb img.emoji{height:1em;width:1em;margin:0}
+.dtb:hover{border-color:var(--red)}
+.dtb.on{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* sticker palette */
+.scats{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.scb{
+  padding:3px 7px;border-radius:6px;border:1px solid var(--border);background:var(--card);
+  color:var(--muted);font-size:.67rem;cursor:pointer;transition:all .15s;font-family:inherit
+}
+.scb.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.sgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-height:94px;overflow-y:auto}
+.spick{
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:4px;border-radius:5px;transition:background .15s;
+}
+.spick img{width:22px;height:22px;display:block}
+.spick:hover{background:var(--card)}
+
+.srow{display:flex;align-items:center;gap:7px;margin-top:7px}
+.srow label{font-size:.72rem;color:var(--muted);white-space:nowrap;min-width:68px}
+.sv{font-size:.72rem;color:var(--accent);min-width:24px;text-align:right}
+.r2{display:flex;gap:7px}.r2>*{flex:1}
+.uplab{
+  display:block;background:var(--card);border:1px dashed var(--border);
+  border-radius:8px;padding:9px;text-align:center;cursor:pointer;
+  font-size:.75rem;color:var(--muted);transition:border-color .2s
+}
+.uplab:hover{border-color:var(--accent);color:var(--accent)}
+#img-up{display:none}
+
+/* ── WRITE ── */
+.write-row{display:flex;height:calc(100vh - var(--nav))}
+.chsb{width:185px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.chh{padding:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.chh h3{font-size:.8rem;color:var(--accent)}
+.chl{flex:1;overflow-y:auto;padding:7px;display:flex;flex-direction:column;gap:4px}
+.chi{padding:8px 9px;border-radius:8px;cursor:pointer;font-size:.77rem;color:var(--muted);transition:all .15s;border:1px solid transparent}
+.chi:hover{background:var(--card);color:var(--text)}
+.chi.on{background:var(--card);color:var(--accent);border-color:var(--border)}
+.chin{font-size:.61rem;color:var(--muted);margin-bottom:2px}
+.wm{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.wbar{padding:9px 16px;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center;background:var(--panel);flex-wrap:wrap}
+.wbar input[type=text]{flex:1;max-width:240px}
+.wc{font-size:.71rem;color:var(--muted);margin-left:auto}
+.wwrap{flex:1;overflow-y:auto;padding:34px;display:flex;justify-content:center;background:#08080f}
+.wpage{
+  width:100%;max-width:640px;background:#1e1e2e;border-radius:4px;
+  padding:52px;min-height:760px;box-shadow:0 4px 30px rgba(0,0,0,.5);
+  font-family:'Merriweather',serif;font-size:16px;line-height:1.8;color:var(--text)
+}
+.wpage[contenteditable]{outline:none}
+.wpage[contenteditable]:empty::before{content:attr(data-ph);color:#444;pointer-events:none}
+
+/* ── DESIGN ── */
+.des-row{display:flex;height:calc(100vh - var(--nav))}
+.dctrl{width:285px;background:var(--panel);border-right:1px solid var(--border);overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.dpa{flex:1;overflow-y:auto;padding:34px;background:#08080f;display:flex;justify-content:center;align-items:flex-start}
+.dpg{width:100%;max-width:560px;border-radius:4px;padding:52px;min-height:540px;box-shadow:0 4px 30px rgba(0,0,0,.5);background:#1e1e2e;transition:all .3s}
+.dph2{font-family:'Playfair Display',serif;font-size:1.65rem;margin-bottom:24px;color:var(--accent)}
+.dpp{font-family:'Merriweather',serif;font-size:16px;line-height:1.8;color:var(--text)}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav>
+  <div class="brand">📚 Kitob Studio</div>
+  <div class="tabs">
+    <button class="tab on" onclick="goPg('cover',this)">🎨 Muqova</button>
+    <button class="tab" onclick="goPg('write',this)">✍️ Yozish</button>
+    <button class="tab" onclick="goPg('design',this)">🖋 Dizayn</button>
+  </div>
+  <div style="width:100px"></div>
+</nav>
+
+<!-- ══════════════ PAGE 1 · MUQOVA ══════════════ -->
+<div class="pg on" id="pg-cover">
+<div class="row">
+
+  <div class="prev">
+    <div class="cwrap" id="cwrap">
+      <div id="cover">
+        <div class="spine"></div>
+        <div id="cbg"></div>
+        <div class="ctop">
+          <div id="cv-title">Kitob Nomi</div>
+          <div id="cv-sub">Sarlavha</div>
+          <div class="cln"></div>
+        </div>
+        <div class="cmid"><div id="cv-quote">Iqtibos yoki tavsif...</div></div>
+        <div class="cbot">
+          <div class="cln"></div>
+          <div id="cv-author">Muallif Ismi</div>
+          <div id="cv-pub">Nashriyot</div>
+        </div>
+      </div>
+      <canvas id="dcanvas" width="300" height="430"></canvas>
+    </div>
+    <button class="btn pri bfull" style="max-width:300px" onclick="dlCover()">⬇ PNG sifatida saqlash</button>
+  </div>
+
+  <div class="ctrl">
+
+    <!-- Janr -->
+    <div class="cs">
+      <div class="cl">Janr shabloni</div>
+      <div class="ggrid" id="ggrid"></div>
+    </div>
+
+    <!-- Matn -->
+    <div class="cs">
+      <div class="cl">Matn</div>
+      <span class="cm">Kitob nomi</span>
+      <textarea id="i-title" rows="2">Kitob Nomi</textarea>
+      <span class="cm" style="margin-top:8px">Sarlavha / Janr</span>
+      <input type="text" id="i-sub" value="Sarlavha"/>
+      <span class="cm" style="margin-top:8px">Iqtibos</span>
+      <textarea id="i-quote" rows="2">Iqtibos yoki tavsif...</textarea>
+      <div class="r2" style="margin-top:8px">
+        <div><span class="cm">Muallif</span><input type="text" id="i-author" value="Muallif Ismi"/></div>
+        <div><span class="cm">Nashriyot</span><input type="text" id="i-pub" value="Nashriyot"/></div>
+      </div>
+    </div>
+
+    <!-- Fon mavzu -->
+    <div class="cs">
+      <div class="cl">Fon mavzusi</div>
+      <div class="crow" id="th-row">
+        <button class="chip on" onclick="setTheme('night',this)">🌙 Tun</button>
+        <button class="chip" onclick="setTheme('fire',this)">🔥 Olov</button>
+        <button class="chip" onclick="setTheme('ocean',this)">🌊 Okean</button>
+        <button class="chip" onclick="setTheme('forest',this)">🌲 O'rmon</button>
+        <button class="chip" onclick="setTheme('gold',this)">✨ Oltin</button>
+        <button class="chip" onclick="setTheme('rose',this)">🌹 Atirgul</button>
+        <button class="chip" onclick="setTheme('purple',this)">💜 Sehrli</button>
+        <button class="chip" onclick="setTheme('mono',this)">⬛ Mono</button>
+      </div>
+    </div>
+
+    <!-- Matn rangi -->
+    <div class="cs">
+      <div class="cl">Matn rangi</div>
+      <div class="crow" id="tc-row">
+        <div class="sw on" style="background:#fff" onclick="setTC('#fff',this)"></div>
+        <div class="sw" style="background:#f0c27f" onclick="setTC('#f0c27f',this)"></div>
+        <div class="sw" style="background:#e94560" onclick="setTC('#e94560',this)"></div>
+        <div class="sw" style="background:#7ee8fa" onclick="setTC('#7ee8fa',this)"></div>
+        <div class="sw" style="background:#b5ead7" onclick="setTC('#b5ead7',this)"></div>
+        <div class="sw" style="background:#ffb7b2" onclick="setTC('#ffb7b2',this)"></div>
+        <div class="sw" style="background:#c3b1e1" onclick="setTC('#c3b1e1',this)"></div>
+        <div class="sw" style="background:#1a1a2e" onclick="setTC('#1a1a2e',this)"></div>
+        <input type="color" value="#ffffff" onchange="setTC(this.value,null)" style="width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;padding:0"/>
+      </div>
+    </div>
+
+    <!-- Shrift -->
+    <div class="cs">
+      <div class="cl">Sarlavha shrifti</div>
+      <div class="crow" id="fc-row">
+        <button class="chip on" style="font-family:'Playfair Display'" onclick="setCF('Playfair Display,serif',this)">Playfair</button>
+        <button class="chip" style="font-family:'Dancing Script'" onclick="setCF('Dancing Script,cursive',this)">Dancing</button>
+        <button class="chip" style="font-family:'Cinzel'" onclick="setCF('Cinzel,serif',this)">Cinzel</button>
+        <button class="chip" style="font-family:'Montserrat'" onclick="setCF('Montserrat,sans-serif',this)">Modern</button>
+        <button class="chip" style="font-family:'Lobster'" onclick="setCF('Lobster,cursive',this)">Lobster</button>
+        <button class="chip" style="font-family:'Oswald'" onclick="setCF('Oswald,sans-serif',this)">Oswald</button>
+      </div>
+    </div>
+
+    <!-- O'lcham -->
+    <div class="cs">
+      <div class="cl">Sarlavha o'lchami</div>
+      <div class="srow">
+        <label>O'lcham</label>
+        <input type="range" min="14" max="52" value="30"
+          oninput="document.getElementById('cv-title').style.fontSize=this.value+'px';
+                   document.getElementById('fsv').textContent=this.value"/>
+        <span class="sv" id="fsv">30</span>
+      </div>
+    </div>
+
+    <!-- Fon rasmi -->
+    <div class="cs">
+      <div class="cl">Fon rasmi</div>
+      <label class="uplab" for="img-up">📁 Rasm yuklash (JPG/PNG)</label>
+      <input type="file" id="img-up" accept="image/*" onchange="loadBg(event)"/>
+      <div class="srow">
+        <label>Shaffoflik</label>
+        <input type="range" min="0" max="100" value="35"
+          oninput="document.getElementById('cbg').style.opacity=this.value/100"/>
+      </div>
+    </div>
+
+    <!-- Chizish -->
+    <div class="cs">
+      <div class="cl">Chizish / Naqsh</div>
+      <div class="drow">
+        <button class="dtb" id="dbtn" onclick="togDraw()">✏️ Chizish</button>
+        <button class="dtb" id="ebtn" onclick="togErase()">🧹 O'chirgich</button>
+        <button class="dtb" onclick="clrCanvas()">🗑 Tozalash</button>
+      </div>
+      <div class="srow">
+        <label>Qalinlik</label>
+        <input type="range" min="1" max="28" value="4" oninput="bSz=+this.value"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:7px">
+        <span class="cm" style="margin:0;white-space:nowrap">Rang:</span>
+        <input type="color" id="bcol" value="#f0c27f"
+          style="height:26px;width:36px;border:none;background:none;cursor:pointer;border-radius:6px"/>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <div class="sw" style="background:#f0c27f;width:18px;height:18px" onclick="document.getElementById('bcol').value='#f0c27f'"></div>
+          <div class="sw" style="background:#e94560;width:18px;height:18px" onclick="document.getElementById('bcol').value='#e94560'"></div>
+          <div class="sw" style="background:#7ee8fa;width:18px;height:18px" onclick="document.getElementById('bcol').value='#7ee8fa'"></div>
+          <div class="sw" style="background:#fff;width:18px;height:18px" onclick="document.getElementById('bcol').value='#ffffff'"></div>
+          <div class="sw" style="background:#b5ead7;width:18px;height:18px" onclick="document.getElementById('bcol').value='#b5ead7'"></div>
+          <div class="sw" style="background:#c3b1e1;width:18px;height:18px" onclick="document.getElementById('bcol').value='#c3b1e1'"></div>
+        </div>
+      </div>
+      <div class="cl" style="margin-top:10px">Tez naqsh</div>
+      <div class="crow">
+        <button class="chip" onclick="dPat('stars')">⭐ Yulduz</button>
+        <button class="chip" onclick="dPat('dots')">· Nuqta</button>
+        <button class="chip" onclick="dPat('lines')">— Chiziq</button>
+        <button class="chip" onclick="dPat('waves')">〜 To'lqin</button>
+        <button class="chip" onclick="dPat('border')">▭ Chegara</button>
+        <button class="chip" onclick="dPat('diamonds')">◆ Olmos</button>
+      </div>
+    </div>
+
+    <!-- Stikerlar -->
+    <div class="cs">
+      <div class="cl">Stikerlar (iOS emoji)</div>
+      <div class="scats" id="scats"></div>
+      <div class="sgrid" id="sgrid"></div>
+      <div style="margin-top:5px;font-size:.68rem;color:var(--muted)">
+        Bosing → muqovaga qo'shiladi &nbsp;·&nbsp; Sudrab joylashtiring &nbsp;·&nbsp; 2x bosib o'chiring
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ PAGE 2 · YOZISH ══════════════ -->
+<div class="pg" id="pg-write">
+<div class="write-row">
+
+  <div class="chsb">
+    <div class="chh">
+      <h3>Boblar</h3>
+      <button class="btn" style="padding:4px 8px;font-size:.71rem" onclick="addCh()">+ Bob</button>
+    </div>
+    <div class="chl" id="chl"></div>
+  </div>
+
+  <div class="wm">
+    <div class="wbar">
+      <span style="font-size:.77rem;color:var(--muted)">Bob:</span>
+      <input type="text" id="ch-inp" value="Birinchi bob"
+        oninput="updChT(this.value)" style="max-width:230px"/>
+      <button class="btn" onclick="fmt('bold')"><b>B</b></button>
+      <button class="btn" onclick="fmt('italic')"><i>I</i></button>
+      <button class="btn" onclick="fmt('underline')"><u>U</u></button>
+      <select onchange="fmtF(this.value);this.value=''" style="max-width:110px">
+        <option value="">Shrift...</option>
+        <option value="Merriweather,serif">Merriweather</option>
+        <option value="'Playfair Display',serif">Playfair</option>
+        <option value="Nunito,sans-serif">Nunito</option>
+        <option value="Montserrat,sans-serif">Montserrat</option>
+        <option value="Georgia,serif">Georgia</option>
+        <option value="Arial,sans-serif">Arial</option>
+      </select>
+      <select onchange="fmtSz(this.value);this.value=''" style="max-width:78px">
+        <option value="">O'lcham...</option>
+        <option value="2">Kichik</option>
+        <option value="3">O'rta</option>
+        <option value="4">Katta</option>
+        <option value="5">Juda katta</option>
+      </select>
+      <div class="wc" id="wc">0 so'z</div>
+    </div>
+    <div class="wwrap">
+      <div class="wpage" id="wed" contenteditable="true"
+        data-ph="Bu yerda yozishni boshlang..."
+        oninput="onEdIn()" spellcheck="false"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ PAGE 3 · DIZAYN ══════════════ -->
+<div class="pg" id="pg-design">
+<div class="des-row">
+
+  <div class="dctrl">
+    <div class="cl" style="font-size:.82rem">Ichki sahifa dizayni</div>
+
+    <div class="cs">
+      <div class="cl">Asosiy shrift</div>
+      <div class="crow" id="df-row">
+        <button class="chip on" onclick="dsp('fontFamily',\"'Merriweather',serif\",this,'df-row')">Merriweather</button>
+        <button class="chip" onclick="dsp('fontFamily',\"'Playfair Display',serif\",this,'df-row')">Playfair</button>
+        <button class="chip" onclick="dsp('fontFamily',\"'Nunito',sans-serif\",this,'df-row')">Nunito</button>
+        <button class="chip" onclick="dsp('fontFamily',\"'Montserrat',sans-serif\",this,'df-row')">Montserrat</button>
+        <button class="chip" onclick="dsp('fontFamily','Georgia,serif',this,'df-row')">Georgia</button>
+        <button class="chip" onclick="dsp('fontFamily','Arial,sans-serif',this,'df-row')">Arial</button>
+      </div>
+    </div>
+
+    <div class="cs">
+      <div class="cl">O'lcham va interval</div>
+      <div class="srow">
+        <label>Harf o'lchami</label>
+        <input type="range" min="12" max="24" value="16"
+          oninput="dsv('fontSize',this.value+'px');this.nextElementSibling.textContent=this.value"/>
+        <span class="sv">16</span>
+      </div>
+      <div class="srow">
+        <label>Satr balandligi</label>
+        <input type="range" min="1" max="3" step=".1" value="1.8"
+          oninput="dsv('lineHeight',this.value);this.nextElementSibling.textContent=this.value"/>
+        <span class="sv">1.8</span>
+      </div>
+      <div class="srow">
+        <label>Harf oralig'i</label>
+        <input type="range" min="-1" max="5" step=".5" value="0"
+          oninput="dsv('letterSpacing',this.value+'px');this.nextElementSibling.textContent=this.value"/>
+        <span class="sv">0</span>
+      </div>
+    </div>
+
+    <div class="cs">
+      <div class="cl">Tekislash</div>
+      <div class="crow" id="da-row">
+        <button class="chip on" onclick="dsp('textAlign','left',this,'da-row')">◀ Chap</button>
+        <button class="chip" onclick="dsp('textAlign','center',this,'da-row')">▬ Markaz</button>
+        <button class="chip" onclick="dsp('textAlign','right',this,'da-row')">▶ O'ng</button>
+        <button class="chip" onclick="dsp('textAlign','justify',this,'da-row')">≡ To'la</button>
+      </div>
+    </div>
+
+    <div class="cs">
+      <div class="cl">Matn rangi</div>
+      <div class="crow">
+        <div class="sw on" style="background:#e8e8f0" onclick="dsv('color','#e8e8f0');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#fff" onclick="dsv('color','#fff');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#f0c27f" onclick="dsv('color','#f0c27f');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#7ee8fa" onclick="dsv('color','#7ee8fa');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#222" onclick="dsv('color','#222');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#1a1a2e" onclick="dsv('color','#1a1a2e');acsw(this,this.parentElement)"></div>
+        <input type="color" value="#e8e8f0" onchange="dsv('color',this.value)"
+          style="width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;padding:0"/>
+      </div>
+    </div>
+
+    <div class="cs">
+      <div class="cl">Sahifa rangi</div>
+      <div class="crow">
+        <div class="sw on" style="background:#1e1e2e" onclick="dsv('pageColor','#1e1e2e');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#fff" onclick="dsv('pageColor','#fff');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#fef9ef" onclick="dsv('pageColor','#fef9ef');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#f5f0e8" onclick="dsv('pageColor','#f5f0e8');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#0d1b2a" onclick="dsv('pageColor','#0d1b2a');acsw(this,this.parentElement)"></div>
+        <div class="sw" style="background:#0a0a0a" onclick="dsv('pageColor','#0a0a0a');acsw(this,this.parentElement)"></div>
+        <input type="color" value="#1e1e2e" onchange="dsv('pageColor',this.value)"
+          style="width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;padding:0"/>
+      </div>
+    </div>
+
+    <div class="cs">
+      <div class="cl">Bob sarlavhasi shrifti</div>
+      <div class="crow" id="dh-row">
+        <button class="chip on" onclick="dsp('titleFont',\"'Playfair Display',serif\",this,'dh-row')">Playfair</button>
+        <button class="chip" onclick="dsp('titleFont',\"'Cinzel',serif\",this,'dh-row')">Cinzel</button>
+        <button class="chip" onclick="dsp('titleFont',\"'Dancing Script',cursive\",this,'dh-row')">Dancing</button>
+        <button class="chip" onclick="dsp('titleFont',\"'Oswald',sans-serif\",this,'dh-row')">Oswald</button>
+        <button class="chip" onclick="dsp('titleFont',\"'Lobster',cursive\",this,'dh-row')">Lobster</button>
+      </div>
+    </div>
+
+    <div class="cs">
+      <div class="cl">Tez uslub</div>
+      <div class="crow">
+        <button class="chip" onclick="apStl('classic')">📜 Klassik</button>
+        <button class="chip" onclick="apStl('modern')">🔷 Zamonaviy</button>
+        <button class="chip" onclick="apStl('elegant')">🌸 Nafis</button>
+        <button class="chip" onclick="apStl('dark')">🌑 Qora</button>
+        <button class="chip" onclick="apStl('light')">☀️ Yorug'</button>
+      </div>
+    </div>
+
+    <button class="btn pri bfull" onclick="apDes()">✅ Yozish sahifasiga qo'llash</button>
+  </div>
+
+  <div class="dpa">
+    <div class="dpg" id="dpg">
+      <div class="dph2" id="dp-h">Birinchi bob</div>
+      <div class="dpp" id="dp-b">Bu yerda kitobingizning matnini ko'rasiz. "Yozish" sahifasida yozgan matnlaringiz shu yerda ko'rinadi.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+<script>
+// ═══════════════════════════════════════
+//  TWEMOJI helper
+// ═══════════════════════════════════════
+const TW_BASE = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/';
+
+function mkTw(emoji, px = 28) {
+  const tmp = document.createElement('span');
+  tmp.textContent = emoji;
+  twemoji.parse(tmp, { folder:'svg', ext:'.svg', base: TW_BASE });
+  const img = tmp.querySelector('img');
+  if (img) {
+    img.removeAttribute('class');
+    img.crossOrigin = 'anonymous';
+    img.style.cssText = `width:${px}px;height:${px}px;display:block;pointer-events:none`;
+    return img;
+  }
+  const sp = document.createElement('span');
+  sp.textContent = emoji;
+  sp.style.fontSize = px + 'px';
+  return sp;
+}
+
+// Parse static nav emojis after load
+window.addEventListener('load', () => {
+  twemoji.parse(document.querySelector('nav .brand'), { folder:'svg', ext:'.svg', base: TW_BASE });
+  twemoji.parse(document.querySelectorAll('.tab'), { folder:'svg', ext:'.svg', base: TW_BASE });
+  // parse chip emojis
+  document.querySelectorAll('.chip').forEach(c => twemoji.parse(c, { folder:'svg', ext:'.svg', base: TW_BASE }));
+  document.querySelectorAll('.dtb').forEach(c => twemoji.parse(c, { folder:'svg', ext:'.svg', base: TW_BASE }));
+  document.querySelectorAll('.uplab').forEach(c => twemoji.parse(c, { folder:'svg', ext:'.svg', base: TW_BASE }));
+  document.querySelectorAll('.btn').forEach(c => twemoji.parse(c, { folder:'svg', ext:'.svg', base: TW_BASE }));
+});
+
+// ═══════════════════════════════════════
+//  NAV
+// ═══════════════════════════════════════
+function goPg(name, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('pg-' + name).classList.add('on');
+  btn.classList.add('on');
+  if (name === 'design') syncDP();
+}
+
+// ═══════════════════════════════════════
+//  GENRES
+// ═══════════════════════════════════════
+const GENRES = [
+  { icon:'💕', name:'Ishq',       bg:'linear-gradient(135deg,#1a0010,#5c0a2e,#9b1b5a)', color:'#ffb7b2', font:'Dancing Script,cursive',
+    stk:['💕','🌹','💖','💋','🥀','✨','🌙','💑','🌸','💗','❤️','🌺','🫀','🫦','💝','🌷'] },
+  { icon:'🔮', name:'Fantaziya',  bg:'linear-gradient(135deg,#0a0018,#1e0b4a,#3d1a8a)', color:'#c3b1e1', font:'Cinzel,serif',
+    stk:['⭐','🌟','🔮','🌙','⚡','🐉','🦄','🧙','🏰','✨','🌌','🗡️','🧝','🪄','🌠','🔯'] },
+  { icon:'🔍', name:'Sirli',      bg:'linear-gradient(135deg,#050810,#0d1a2e,#1a2f4a)', color:'#7ee8fa', font:'Oswald,sans-serif',
+    stk:['🔍','🕵️','🔦','🗝️','💀','🖤','🌃','🔒','👁️','🌧️','🌑','⛓️','🩻','🔭','📻','🗃️'] },
+  { icon:'⛰️', name:'Sarguzasht', bg:'linear-gradient(135deg,#0a1400,#1e3a00,#2d5a00)', color:'#b5ead7', font:'Montserrat,sans-serif',
+    stk:['🗺️','⛰️','🌲','🧭','⚓','🏕️','🦅','🌊','🔥','⚔️','🐺','🌄','🧗','🌍','🪂','🏹'] },
+  { icon:'😱', name:'Triller',    bg:'linear-gradient(135deg,#100000,#3d0000,#6b0000)', color:'#ff6b6b', font:'Oswald,sans-serif',
+    stk:['😱','💀','⚡','🌑','🕷️','🦇','🔪','🌩️','👻','🩸','⛓️','🖤','🪦','🕸️','🧟','☠️'] },
+  { icon:'📜', name:'Tarix',      bg:'linear-gradient(135deg,#1a1000,#4a2e00,#7a4a00)', color:'#f0c27f', font:'Playfair Display,serif',
+    stk:['⚔️','👑','🏛️','📜','🛡️','⚖️','🏰','🎭','🕯️','🧭','🌍','🗡️','⚱️','🏺','🗿','🪙'] },
+  { icon:'🌸', name:"She'riyat",  bg:'linear-gradient(135deg,#160a1a,#2d1a3e,#4a2a5e)', color:'#c3b1e1', font:'Dancing Script,cursive',
+    stk:['🌸','🌺','🦋','✨','🌙','🕊️','🌿','💫','🌊','🍃','🌷','🌹','🪷','🌼','🫧','🍀'] },
+  { icon:'😄', name:'Hajviy',     bg:'linear-gradient(135deg,#001a1a,#003d4a,#006080)', color:'#7ee8fa', font:'Lobster,cursive',
+    stk:['😄','🎭','🃏','🎪','🤣','🎉','🌈','✨','🎨','💫','🌟','🎊','🎈','🥳','🎠','🎡'] },
+];
+
+function initGenres() {
+  const g = document.getElementById('ggrid');
+  GENRES.forEach(gen => {
+    const b = document.createElement('button');
+    b.className = 'gbtn';
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'gicon';
+    iconWrap.appendChild(mkTw(gen.icon, 24));
+    const nameEl = document.createElement('span');
+    nameEl.className = 'gname';
+    nameEl.textContent = gen.name;
+    b.appendChild(iconWrap);
+    b.appendChild(nameEl);
+    b.onclick = () => {
+      document.querySelectorAll('.gbtn').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      document.getElementById('cover').style.background = gen.bg;
+      document.getElementById('cover').style.color = gen.color;
+      document.getElementById('cover').style.fontFamily = gen.font;
+      STK_SETS['_janr'] = gen.stk;
+      renderStk('_janr');
+    };
+    g.appendChild(b);
+  });
+}
+
+// ═══════════════════════════════════════
+//  COVER BINDINGS
+// ═══════════════════════════════════════
+[['i-title','cv-title'],['i-sub','cv-sub'],['i-quote','cv-quote'],
+ ['i-author','cv-author'],['i-pub','cv-pub']].forEach(([inp,el]) => {
+  document.getElementById(inp).addEventListener('input', function() {
+    document.getElementById(el).textContent = this.value;
+  });
+});
+
+const THEMES = {
+  night:'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)',
+  fire:'linear-gradient(135deg,#1a0a00,#7b1e00,#c0392b)',
+  ocean:'linear-gradient(135deg,#00171f,#003459,#007ea7)',
+  forest:'linear-gradient(135deg,#0a1a0a,#1b4332,#2d6a4f)',
+  gold:'linear-gradient(135deg,#3d2800,#7a5000,#c49a00)',
+  rose:'linear-gradient(135deg,#2d0019,#6b002b,#c2185b)',
+  purple:'linear-gradient(135deg,#0e0018,#2d0a5e,#5b0ea6)',
+  mono:'linear-gradient(135deg,#000,#1a1a1a,#2d2d2d)',
+};
+
+function setTheme(n, b) {
+  document.querySelectorAll('#th-row .chip').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  document.getElementById('cover').style.background = THEMES[n];
+  document.querySelectorAll('.gbtn').forEach(x => x.classList.remove('on'));
+}
+function setTC(c, b) {
+  if (b) { document.querySelectorAll('#tc-row .sw').forEach(x => x.classList.remove('on')); b.classList.add('on'); }
+  document.getElementById('cover').style.color = c;
+}
+function setCF(f, b) {
+  document.querySelectorAll('#fc-row .chip').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  document.getElementById('cover').style.fontFamily = f;
+}
+function loadBg(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => document.getElementById('cbg').style.backgroundImage = `url('${ev.target.result}')`;
+  r.readAsDataURL(f);
+}
+
+// ═══════════════════════════════════════
+//  DRAWING
+// ═══════════════════════════════════════
+const cv = document.getElementById('dcanvas');
+const ctx = cv.getContext('2d');
+let drawing = false, drawOn = false, eraseOn = false, bSz = 4;
+
+function pos(e) {
+  const r = cv.getBoundingClientRect();
+  const sx = cv.width/r.width, sy = cv.height/r.height;
+  const src = e.touches ? e.touches[0] : e;
+  return { x:(src.clientX - r.left)*sx, y:(src.clientY - r.top)*sy };
+}
+
+cv.addEventListener('mousedown', e => {
+  if (!drawOn && !eraseOn) return;
+  drawing = true;
+  const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+});
+cv.addEventListener('mousemove', e => {
+  if (!drawing) return;
+  const p = pos(e);
+  if (eraseOn) {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineWidth = bSz * 3;
+    ctx.strokeStyle = 'rgba(0,0,0,1)';
+  } else {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.lineWidth = bSz;
+    ctx.strokeStyle = document.getElementById('bcol').value;
+  }
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.lineTo(p.x, p.y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(p.x, p.y);
+});
+['mouseup','mouseleave'].forEach(ev => cv.addEventListener(ev, () => { drawing=false; ctx.beginPath(); }));
+cv.addEventListener('touchstart', e => { e.preventDefault(); cv.dispatchEvent(new MouseEvent('mousedown',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})); },{passive:false});
+cv.addEventListener('touchmove',  e => { e.preventDefault(); cv.dispatchEvent(new MouseEvent('mousemove',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})); },{passive:false});
+cv.addEventListener('touchend',   e => { e.preventDefault(); cv.dispatchEvent(new MouseEvent('mouseup')); },{passive:false});
+
+function togDraw()  { drawOn=!drawOn; eraseOn=false; cv.classList.toggle('on',drawOn||eraseOn); document.getElementById('dbtn').classList.toggle('on',drawOn); document.getElementById('ebtn').classList.remove('on'); }
+function togErase() { eraseOn=!eraseOn; drawOn=false; cv.classList.toggle('on',drawOn||eraseOn); document.getElementById('ebtn').classList.toggle('on',eraseOn); document.getElementById('dbtn').classList.remove('on'); }
+function clrCanvas() { ctx.clearRect(0,0,cv.width,cv.height); }
+
+function dPat(type) {
+  const w=cv.width, h=cv.height, c=document.getElementById('bcol').value;
+  ctx.globalCompositeOperation='source-over'; ctx.strokeStyle=c; ctx.fillStyle=c;
+  if (type==='dots') {
+    for(let x=15;x<w;x+=22) for(let y=15;y<h;y+=22) { ctx.beginPath(); ctx.arc(x,y,1.5,0,Math.PI*2); ctx.fill(); }
+  } else if (type==='lines') {
+    ctx.lineWidth=1; ctx.globalAlpha=.22;
+    for(let y=20;y<h;y+=26) { ctx.beginPath(); ctx.moveTo(10,y); ctx.lineTo(w-10,y); ctx.stroke(); }
+    ctx.globalAlpha=1;
+  } else if (type==='stars') {
+    ctx.font='13px serif';
+    const s=['✦','✧','·','★','✶'];
+    for(let x=0;x<w;x+=30) for(let y=0;y<h;y+=30)
+      if(Math.random()>.5) ctx.fillText(s[Math.floor(Math.random()*s.length)], x+Math.random()*16, y+Math.random()*16);
+  } else if (type==='waves') {
+    ctx.lineWidth=1.2; ctx.globalAlpha=.32;
+    for(let y=18;y<h;y+=18) { ctx.beginPath(); ctx.moveTo(0,y); for(let x=0;x<w;x+=8) ctx.lineTo(x,y+Math.sin(x*.25)*4); ctx.stroke(); }
+    ctx.globalAlpha=1;
+  } else if (type==='border') {
+    ctx.lineWidth=2.5; ctx.globalAlpha=.55; ctx.strokeRect(8,8,w-16,h-16);
+    ctx.lineWidth=1; ctx.globalAlpha=.25; ctx.strokeRect(14,14,w-28,h-28); ctx.globalAlpha=1;
+  } else if (type==='diamonds') {
+    ctx.lineWidth=1; ctx.globalAlpha=.28;
+    for(let x=0;x<w;x+=28) for(let y=0;y<h;y+=28) {
+      ctx.beginPath(); ctx.moveTo(x+14,y); ctx.lineTo(x+28,y+14); ctx.lineTo(x+14,y+28); ctx.lineTo(x,y+14); ctx.closePath(); ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+}
+
+// ═══════════════════════════════════════
+//  STICKERS (iOS Twemoji)
+// ═══════════════════════════════════════
+const STK_SETS = {
+  'Umumiy': ['📚','✏️','🖊️','📖','🌟','💡','🎨','🎭','🏆','🎯','💎','🌈','🔖','📝','🎬','🎵'],
+  'Tabiat': ['🌸','🌺','🌹','🌷','🌿','🍃','🦋','🕊️','🌊','⛰️','🌙','⭐','☀️','🌈','🍁','🌲'],
+  'Yulduz': ['⭐','🌟','✨','💫','🌙','☀️','🌠','🎆','🎇','💥','⚡','🌌','🔭','🌙','🪐','🌠'],
+  'Sevgi':  ['❤️','💕','💖','💗','💑','💋','🌹','💐','🥀','💞','💝','💟','❣️','💓','💘','🫀'],
+  'San\'at':['✏️','📚','📖','📝','🖊️','🔖','🖌️','🎨','🎬','🎼','🎭','🏛️','🖼️','✒️','📓','🖋️'],
+  '_janr':  ['💕','🌹','💖','💋','🥀','✨','🌙','💑','🌸','💗','❤️','🌺'],
+};
+
+function initStk() {
+  const cEl = document.getElementById('scats');
+  Object.keys(STK_SETS).filter(k => k !== '_janr').forEach((cat, i) => {
+    const b = document.createElement('button');
+    b.className = 'scb' + (i===0?' on':'');
+    b.textContent = cat;
+    b.onclick = () => { document.querySelectorAll('.scb').forEach(x=>x.classList.remove('on')); b.classList.add('on'); renderStk(cat); };
+    cEl.appendChild(b);
+  });
+  renderStk('Umumiy');
+}
+
+function renderStk(cat) {
+  const g = document.getElementById('sgrid');
+  g.innerHTML = '';
+  (STK_SETS[cat]||[]).forEach(em => {
+    const s = document.createElement('span');
+    s.className = 'spick';
+    s.title = em;
+    const img = mkTw(em, 22);
+    s.appendChild(img);
+    s.onclick = () => addStk(em);
+    g.appendChild(s);
+  });
+}
+
+function addStk(emoji) {
+  const cover = document.getElementById('cover');
+  const el = document.createElement('div');
+  el.className = 'stk';
+  el.dataset.emoji = emoji;
+  const img = mkTw(emoji, 32);
+  el.appendChild(img);
+  el.style.left = (28 + Math.random()*200) + 'px';
+  el.style.top  = (28 + Math.random()*350) + 'px';
+  el.addEventListener('dblclick', () => el.remove());
+  makeDrag(el);
+  cover.appendChild(el);
+}
+
+function makeDrag(el) {
+  let ox, oy, sx, sy;
+  el.addEventListener('mousedown', e => {
+    e.stopPropagation();
+    if (drawOn || eraseOn) return;
+    ox=el.offsetLeft; oy=el.offsetTop; sx=e.clientX; sy=e.clientY;
+    el.classList.add('sel');
+    const mv = m => { el.style.left=(ox+m.clientX-sx)+'px'; el.style.top=(oy+m.clientY-sy)+'px'; };
+    const up = () => { document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); };
+    document.addEventListener('mousemove',mv); document.addEventListener('mouseup',up);
+  });
+  document.addEventListener('click', e => { if(e.target!==el && !el.contains(e.target)) el.classList.remove('sel'); });
+}
+
+// ═══════════════════════════════════════
+//  DOWNLOAD
+// ═══════════════════════════════════════
+function dlCover() {
+  document.querySelectorAll('.stk').forEach(s => s.classList.remove('sel'));
+  const wasD=drawOn, wasE=eraseOn;
+  drawOn=false; eraseOn=false; cv.classList.remove('on');
+  html2canvas(document.getElementById('cover'), { scale:3, useCORS:true, allowTaint:false, logging:false }).then(c => {
+    const a = document.createElement('a'); a.download='kitob_muqovasi.png'; a.href=c.toDataURL(); a.click();
+    if(wasD) togDraw(); if(wasE) togErase();
+  });
+}
+
+// ═══════════════════════════════════════
+//  WRITING
+// ═══════════════════════════════════════
+let CHS = [{ title:'Birinchi bob', html:'' }];
+let curC = 0;
+
+function initWrite() { renderCHL(); loadC(0); }
+
+function renderCHL() {
+  const l = document.getElementById('chl');
+  l.innerHTML = '';
+  CHS.forEach((ch, i) => {
+    const el = document.createElement('div');
+    el.className = 'chi' + (i===curC?' on':'');
+    el.innerHTML = `<div class="chin">Bob ${i+1}</div><div>${ch.title}</div>`;
+    el.onclick = () => { saveC(); loadC(i); };
+    l.appendChild(el);
+  });
+}
+
+function saveC() { CHS[curC].html = document.getElementById('wed').innerHTML; }
+function loadC(i) {
+  curC = i;
+  document.getElementById('ch-inp').value = CHS[i].title;
+  document.getElementById('wed').innerHTML = CHS[i].html;
+  renderCHL(); updWC();
+}
+function updChT(v) { CHS[curC].title = v; renderCHL(); }
+function addCh() {
+  saveC();
+  CHS.push({ title:`${CHS.length+1}-bob`, html:'' });
+  loadC(CHS.length-1);
+}
+function onEdIn() { saveC(); updWC(); }
+function updWC() {
+  const t = document.getElementById('wed').innerText||'';
+  const n = t.trim() ? t.trim().split(/\s+/).length : 0;
+  document.getElementById('wc').textContent = n+" so'z";
+}
+function fmt(cmd) { document.execCommand(cmd,false,null); document.getElementById('wed').focus(); }
+function fmtF(v) { if(v) { document.execCommand('fontName',false,v); document.getElementById('wed').focus(); } }
+function fmtSz(v) { if(v) { document.execCommand('fontSize',false,v); document.getElementById('wed').focus(); } }
+
+// ═══════════════════════════════════════
+//  DESIGN
+// ═══════════════════════════════════════
+const D = {
+  fontFamily:"'Merriweather',serif", fontSize:'16px', lineHeight:'1.8',
+  letterSpacing:'0px', textAlign:'left', color:'#e8e8f0',
+  pageColor:'#1e1e2e', titleFont:"'Playfair Display',serif",
+};
+const STLS = {
+  classic:{ fontFamily:"'Merriweather',serif", fontSize:'15px', lineHeight:'2', color:'#2c1a00', pageColor:'#f5f0e8', textAlign:'justify', titleFont:"'Playfair Display',serif" },
+  modern: { fontFamily:"'Montserrat',sans-serif", fontSize:'15px', lineHeight:'1.7', color:'#e8e8f0', pageColor:'#121212', textAlign:'left', titleFont:"'Oswald',sans-serif" },
+  elegant:{ fontFamily:"'Playfair Display',serif", fontSize:'16px', lineHeight:'2', color:'#c3b1e1', pageColor:'#1a0a2e', textAlign:'center', titleFont:"'Dancing Script',cursive" },
+  dark:   { fontFamily:"'Nunito',sans-serif", fontSize:'15px', lineHeight:'1.8', color:'#aaa', pageColor:'#0a0a0a', textAlign:'left', titleFont:"'Cinzel',serif" },
+  light:  { fontFamily:'Georgia,serif', fontSize:'16px', lineHeight:'1.9', color:'#222', pageColor:'#fefefe', textAlign:'justify', titleFont:"'Playfair Display',serif" },
+};
+
+function dsp(prop, val, btn, rowId) {
+  D[prop]=val;
+  if(btn && rowId) { document.querySelectorAll('#'+rowId+' .chip').forEach(x=>x.classList.remove('on')); btn.classList.add('on'); }
+  syncDP();
+}
+function dsv(prop, val) { D[prop]=val; syncDP(); }
+function acsw(el, par) { par.querySelectorAll('.sw').forEach(x=>x.classList.remove('on')); el.classList.add('on'); }
+function apStl(n) { Object.assign(D, STLS[n]); syncDP(); }
+
+function syncDP() {
+  const pg=document.getElementById('dpg');
+  const h=document.getElementById('dp-h');
+  const b=document.getElementById('dp-b');
+  if(!pg) return;
+  pg.style.backgroundColor = D.pageColor;
+  h.style.fontFamily = D.titleFont;
+  h.style.color = D.color;
+  h.textContent = CHS[curC]?.title || 'Bob';
+  b.style.cssText = `font-family:${D.fontFamily};font-size:${D.fontSize};line-height:${D.lineHeight};letter-spacing:${D.letterSpacing};text-align:${D.textAlign};color:${D.color}`;
+  const txt = document.getElementById('wed')?.innerText || '';
+  b.textContent = txt || "Bu yerda kitobingizning matnini ko'rasiz. \"Yozish\" sahifasida yozgan matnlaringiz shu yerda ko'rinadi.";
+}
+
+function apDes() {
+  const ed = document.getElementById('wed');
+  Object.assign(ed.style, {
+    fontFamily:D.fontFamily, fontSize:D.fontSize, lineHeight:D.lineHeight,
+    letterSpacing:D.letterSpacing, textAlign:D.textAlign, color:D.color, backgroundColor:D.pageColor
+  });
+  alert("✅ Dizayn yozish sahifasiga qo'llandi!");
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+initGenres();
+initStk();
+initWrite();
+</script>
+</body>
+</html>
