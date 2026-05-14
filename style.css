@@ -126,7 +126,8 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   cursor:pointer;transition:all .15s;font-family:inherit
 }
 .gbtn:hover,.gbtn.on{border-color:var(--accent);background:rgba(240,194,127,.1)}
-.gicon{font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:1.4rem;line-height:1}
+.gicon{width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.gicon svg{width:28px;height:28px;flex-shrink:0}
 .gname{font-size:.6rem;color:var(--muted)}
 
 /* draw buttons */
