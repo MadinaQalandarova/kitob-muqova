@@ -1,529 +1,1651 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uz">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Kitob Studio</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Dancing+Script:wght@700&family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Lobster&family=Oswald:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;700&family=Abril+Fatface&family=Pacifico&family=Raleway:wght@300;400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Righteous&family=Satisfy&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=Great+Vibes&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css"/>
-<!-- Firebase CDN -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-</head>
-<body>
-
-<!-- ═══ LOADING OVERLAY ═══ -->
-<div id="ks-loading">
-  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f0c27f" stroke-width="2" stroke-linecap="round">
-    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-  </svg>
-  <span>Yuklanmoqda...</span>
-</div>
-
-<!-- ═══ NAV ═══ -->
-<nav>
-  <div class="brand">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0c27f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-    Kitob Studio
-  </div>
-  <div class="tabs">
-    <button class="tab on" onclick="goPg('cover',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Muqova
-    </button>
-    <button class="tab" onclick="goPg('write',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Yozish
-    </button>
-    <button class="tab" onclick="goPg('design',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
-      Dizayn
-    </button>
-  </div>
-  <div class="nav-user">
-    <div class="nav-undo">
-      <button class="btn" id="undo-btn" onclick="undoH()" title="Bekor qilish (Ctrl+Z)" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
-      </button>
-      <button class="btn" id="redo-btn" onclick="redoH()" title="Qayta (Ctrl+Y)" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg>
-      </button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kitob Studio</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Dancing+Script:wght@700&family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Lobster&family=Oswald:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;700&family=Abril+Fatface&family=Pacifico&family=Raleway:wght@300;400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Righteous&family=Satisfy&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=Great+Vibes&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+  </head>
+  <body>
+    <!-- ═══ LOADING OVERLAY ═══ -->
+    <div id="ks-loading">
+      <svg
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#f0c27f"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path
+          d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+        />
+      </svg>
+      <span>Yuklanmoqda...</span>
     </div>
-    <div class="nav-av" id="nav-av">?</div>
-    <span class="nav-nm" id="nav-nm"></span>
-    <button class="btn" onclick="doSignOut()" style="padding:5px 9px;font-size:.7rem">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Chiqish
-    </button>
-  </div>
-</nav>
 
-<!-- ══════ PAGE 1 · MUQOVA ══════ -->
-<div class="pg on" id="pg-cover">
-<div class="row">
+    <!-- ═══ NAV ═══ -->
+    <nav>
+      <div class="brand">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#f0c27f"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path
+            d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+          />
+        </svg>
+        Kitob Studio
+      </div>
+      <div class="tabs">
+        <button class="tab on" onclick="goPg('cover', this)">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path
+              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+            />
+          </svg>
+          Muqova
+        </button>
+        <button class="tab" onclick="goPg('write', this)">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          Yozish
+        </button>
+        <button class="tab" onclick="goPg('design', this)">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+            <path
+              d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"
+            />
+          </svg>
+          Dizayn
+        </button>
+      </div>
+      <div class="nav-user">
+        <div class="nav-undo">
+          <button
+            class="btn"
+            id="undo-btn"
+            onclick="undoH()"
+            title="Bekor qilish (Ctrl+Z)"
+            disabled
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 7v6h6" />
+              <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+            </svg>
+          </button>
+          <button
+            class="btn"
+            id="redo-btn"
+            onclick="redoH()"
+            title="Qayta (Ctrl+Y)"
+            disabled
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 7v6h-6" />
+              <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13" />
+            </svg>
+          </button>
+        </div>
+        <div class="nav-av" id="nav-av">?</div>
+        <span class="nav-nm" id="nav-nm"></span>
+        <button
+          class="btn"
+          onclick="doSignOut()"
+          style="padding: 5px 9px; font-size: 0.7rem"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Chiqish
+        </button>
+      </div>
+    </nav>
 
-  <div class="prev">
-    <div class="book-scene">
-      <div class="book-wrap" id="book-wrap">
-        <div class="face-spine"><span class="face-spine-txt">Kitob Studio</span></div>
-        <div id="cover">
-          <div class="spine"></div>
-          <div id="cbg"></div>
-          <div class="cv-drag" id="cg-top" style="top:28px;left:22px">
-            <div id="cv-title">Kitob Nomi</div>
-            <div id="cv-sub">Sarlavha</div>
-            <div class="cln"></div>
+    <!-- ══════ PAGE 1 · MUQOVA ══════ -->
+    <div class="pg on" id="pg-cover">
+      <div class="row">
+        <div class="prev">
+          <div class="book-scene">
+            <div class="book-wrap" id="book-wrap">
+              <div class="face-spine">
+                <span class="face-spine-txt">Kitob Studio</span>
+              </div>
+              <div id="cover">
+                <div class="spine"></div>
+                <div id="cbg"></div>
+                <div class="cv-drag" id="cg-top" style="top: 28px; left: 22px">
+                  <div id="cv-title">Kitob Nomi</div>
+                  <div id="cv-sub">Sarlavha</div>
+                  <div class="cln"></div>
+                </div>
+                <div
+                  class="cv-drag"
+                  id="cg-mid"
+                  style="top: 188px; left: 22px; text-align: center"
+                >
+                  <div id="cv-quote">Iqtibos yoki tavsif...</div>
+                </div>
+                <div class="cv-drag" id="cg-bot" style="top: 358px; left: 22px">
+                  <div class="cln"></div>
+                  <div id="cv-author">Muallif Ismi</div>
+                  <div id="cv-pub">Nashriyot</div>
+                </div>
+                <canvas id="dcanvas" width="300" height="430"></canvas>
+              </div>
+            </div>
           </div>
-          <div class="cv-drag" id="cg-mid" style="top:188px;left:22px;text-align:center">
-            <div id="cv-quote">Iqtibos yoki tavsif...</div>
+          <div style="display: flex; gap: 8px; max-width: 300px; width: 100%">
+            <button
+              class="btn"
+              id="btn3d"
+              onclick="tog3D(this)"
+              title="3D ko'rinish"
+              style="flex-shrink: 0; padding: 7px 14px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                />
+              </svg>
+              3D
+            </button>
+            <button class="btn pri bfull" onclick="dlCover()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              PNG saqlash
+            </button>
           </div>
-          <div class="cv-drag" id="cg-bot" style="top:358px;left:22px">
-            <div class="cln"></div>
-            <div id="cv-author">Muallif Ismi</div>
-            <div id="cv-pub">Nashriyot</div>
+        </div>
+
+        <div class="ctrl">
+          <!-- Rang mavzusi -->
+          <div class="cs">
+            <div class="cl">Rang mavzusi</div>
+            <div class="tgrid">
+              <button class="tcard on" onclick="setPgTheme('kosmik', this)">
+                <div class="tprev">
+                  <div style="flex: 1; background: #0f0f1a"></div>
+                  <div style="flex: 1; background: #16213e"></div>
+                  <div style="flex: 1; background: #f0c27f"></div>
+                  <div style="flex: 1; background: #e94560"></div>
+                </div>
+                <span>Kosmik Ko'k</span>
+              </button>
+              <button class="tcard" onclick="setPgTheme('oltin', this)">
+                <div class="tprev">
+                  <div style="flex: 1; background: #0c0900"></div>
+                  <div style="flex: 1; background: #1c1500"></div>
+                  <div style="flex: 1; background: #d4a853"></div>
+                  <div style="flex: 1; background: #cc3333"></div>
+                </div>
+                <span>Tun Oltin</span>
+              </button>
+              <button class="tcard" onclick="setPgTheme('binafsha', this)">
+                <div class="tprev">
+                  <div style="flex: 1; background: #0c0010"></div>
+                  <div style="flex: 1; background: #1a0028"></div>
+                  <div style="flex: 1; background: #c084fc"></div>
+                  <div style="flex: 1; background: #ff3d7f"></div>
+                </div>
+                <span>Sehrli Binafsha</span>
+              </button>
+              <button class="tcard" onclick="setPgTheme('yashil', this)">
+                <div class="tprev">
+                  <div style="flex: 1; background: #040c07"></div>
+                  <div style="flex: 1; background: #0c1c10"></div>
+                  <div style="flex: 1; background: #52d68a"></div>
+                  <div style="flex: 1; background: #ff5252"></div>
+                </div>
+                <span>O'rmon Yashil</span>
+              </button>
+            </div>
           </div>
-          <canvas id="dcanvas" width="300" height="430"></canvas>
+
+          <!-- Muqova shablonlari -->
+          <div class="cs">
+            <div class="cl">Muqova shablonlari</div>
+            <div id="tpl-grid"></div>
+          </div>
+
+          <!-- Janr -->
+          <div class="cs">
+            <div class="cl">Janr shabloni</div>
+            <div class="ggrid" id="ggrid"></div>
+          </div>
+
+          <!-- Matn -->
+          <div class="cs">
+            <div class="cl">Matn</div>
+            <span class="cm">Kitob nomi</span>
+            <textarea id="i-title" rows="2">Kitob Nomi</textarea>
+            <span class="cm" style="margin-top: 8px">Sarlavha / Janr</span>
+            <input type="text" id="i-sub" value="Sarlavha" />
+            <span class="cm" style="margin-top: 8px">Iqtibos</span>
+            <textarea id="i-quote" rows="2">Iqtibos yoki tavsif...</textarea>
+            <div class="r2" style="margin-top: 8px">
+              <div>
+                <span class="cm">Muallif</span
+                ><input type="text" id="i-author" value="Muallif Ismi" />
+              </div>
+              <div>
+                <span class="cm">Nashriyot</span
+                ><input type="text" id="i-pub" value="Nashriyot" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Fon mavzu -->
+          <div class="cs">
+            <div class="cl">Fon mavzusi</div>
+            <div class="crow" id="th-row">
+              <button class="chip on" onclick="setTheme('night', this)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path
+                    d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                  /></svg
+                >Tun
+              </button>
+              <button class="chip" onclick="setTheme('fire', this)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"
+                  /></svg
+                >Olov
+              </button>
+              <button class="chip" onclick="setTheme('ocean', this)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path
+                    d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"
+                  />
+                  <path
+                    d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"
+                  /></svg
+                >Okean
+              </button>
+              <button class="chip" onclick="setTheme('forest', this)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 22V12M4 12l8-8 8 8M4 17l8-8 8 8" /></svg
+                >O'rmon
+              </button>
+              <button class="chip" onclick="setTheme('gold', this)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                >
+                  <path
+                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+                  /></svg
+                >Oltin
+              </button>
+              <button class="chip" onclick="setTheme('rose', this)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <circle cx="12" cy="12" r="3" />
+                  <path
+                    d="M12 2v3M12 19v3M2 12h3M19 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"
+                  /></svg
+                >Atirgul
+              </button>
+              <button class="chip" onclick="setTheme('purple', this)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path
+                    d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.5V22h3.5L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"
+                  />
+                  <path d="m14 7 3 3" /></svg
+                >Sehrli
+              </button>
+              <button class="chip" onclick="setTheme('mono', this)">
+                <svg viewBox="0 0 24 24" fill="currentColor" opacity=".8">
+                  <rect x="3" y="3" width="18" height="18" rx="2" /></svg
+                >Mono
+              </button>
+            </div>
+          </div>
+
+          <!-- Matn rangi -->
+          <div class="cs">
+            <div class="cl">Matn rangi</div>
+            <div class="crow" id="tc-row">
+              <div
+                class="sw on"
+                style="background: #fff"
+                onclick="setTC('#fff', this)"
+              ></div>
+              <div
+                class="sw"
+                style="background: #f0c27f"
+                onclick="setTC('#f0c27f', this)"
+              ></div>
+              <div
+                class="sw"
+                style="background: #e94560"
+                onclick="setTC('#e94560', this)"
+              ></div>
+              <div
+                class="sw"
+                style="background: #7ee8fa"
+                onclick="setTC('#7ee8fa', this)"
+              ></div>
+              <div
+                class="sw"
+                style="background: #b5ead7"
+                onclick="setTC('#b5ead7', this)"
+              ></div>
+              <div
+                class="sw"
+                style="background: #ffb7b2"
+                onclick="setTC('#ffb7b2', this)"
+              ></div>
+              <div
+                class="sw"
+                style="background: #c3b1e1"
+                onclick="setTC('#c3b1e1', this)"
+              ></div>
+              <div
+                class="sw"
+                style="background: #1a1a2e"
+                onclick="setTC('#1a1a2e', this)"
+              ></div>
+              <input
+                type="color"
+                value="#ffffff"
+                onchange="setTC(this.value, null)"
+                style="
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 50%;
+                  border: none;
+                  cursor: pointer;
+                  padding: 0;
+                "
+              />
+            </div>
+          </div>
+
+          <!-- Shrift — 16 ta -->
+          <div class="cs">
+            <div class="cl">Sarlavha shrifti</div>
+            <div class="crow" id="fc-row">
+              <button
+                class="chip on"
+                style="font-family: &quot;Playfair Display&quot;"
+                onclick="setCF('Playfair Display,serif', this)"
+              >
+                Playfair
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Dancing Script&quot;"
+                onclick="setCF('Dancing Script,cursive', this)"
+              >
+                Dancing
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Cinzel&quot;"
+                onclick="setCF('Cinzel,serif', this)"
+              >
+                Cinzel
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Montserrat&quot;"
+                onclick="setCF('Montserrat,sans-serif', this)"
+              >
+                Montserrat
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Lobster&quot;"
+                onclick="setCF('Lobster,cursive', this)"
+              >
+                Lobster
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Oswald&quot;"
+                onclick="setCF('Oswald,sans-serif', this)"
+              >
+                Oswald
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Abril Fatface&quot;"
+                onclick="setCF('Abril Fatface,cursive', this)"
+              >
+                Abril
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Pacifico&quot;"
+                onclick="setCF('Pacifico,cursive', this)"
+              >
+                Pacifico
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Raleway&quot;"
+                onclick="setCF('Raleway,sans-serif', this)"
+              >
+                Raleway
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Lora&quot;"
+                onclick="setCF('Lora,serif', this)"
+              >
+                Lora
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Bebas Neue&quot;"
+                onclick="setCF('Bebas Neue,cursive', this)"
+              >
+                Bebas
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Righteous&quot;"
+                onclick="setCF('Righteous,cursive', this)"
+              >
+                Righteous
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Satisfy&quot;"
+                onclick="setCF('Satisfy,cursive', this)"
+              >
+                Satisfy
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Cormorant Garamond&quot;"
+                onclick="setCF('Cormorant Garamond,serif', this)"
+              >
+                Cormorant
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Permanent Marker&quot;"
+                onclick="setCF('Permanent Marker,cursive', this)"
+              >
+                Marker
+              </button>
+              <button
+                class="chip"
+                style="font-family: &quot;Great Vibes&quot;"
+                onclick="setCF('Great Vibes,cursive', this)"
+              >
+                Great Vibes
+              </button>
+            </div>
+          </div>
+
+          <!-- O'lcham -->
+          <div class="cs">
+            <div class="cl">Sarlavha o'lchami</div>
+            <div class="srow">
+              <label>O'lcham</label>
+              <input
+                type="range"
+                min="14"
+                max="52"
+                value="30"
+                oninput="
+                  document.getElementById('cv-title').style.fontSize =
+                    this.value + 'px';
+                  document.getElementById('fsv').textContent = this.value;
+                  scheduleSave();
+                "
+              />
+              <span class="sv" id="fsv">30</span>
+            </div>
+            <div class="srow">
+              <label>Matn soya</label>
+              <input
+                type="range"
+                min="0"
+                max="24"
+                value="8"
+                id="shadow-sl"
+                oninput="
+                  setCvShadow(this.value);
+                  document.getElementById('shadow-v').textContent = this.value;
+                "
+              />
+              <span class="sv" id="shadow-v">8</span>
+            </div>
+          </div>
+
+          <!-- Fon rasmi -->
+          <div class="cs">
+            <div class="cl">Fon rasmi</div>
+            <label class="uplab" for="img-up">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              Rasm yuklash (JPG/PNG)
+            </label>
+            <input
+              type="file"
+              id="img-up"
+              accept="image/*"
+              onchange="loadBg(event)"
+            />
+            <div class="srow">
+              <label>Shaffoflik</label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value="35"
+                oninput="
+                  document.getElementById('cbg').style.opacity =
+                    this.value / 100
+                "
+              />
+            </div>
+          </div>
+
+          <!-- Custom gradient -->
+          <div class="cs">
+            <div class="cl">Custom Gradient</div>
+            <div class="grad-pickers">
+              <label>Rang 1</label>
+              <input
+                type="color"
+                id="grad-c1"
+                value="#1a1a2e"
+                oninput="applyGrad()"
+              />
+              <label>Rang 2</label>
+              <input
+                type="color"
+                id="grad-c2"
+                value="#16213e"
+                oninput="applyGrad()"
+              />
+              <label>Rang 3</label>
+              <input
+                type="color"
+                id="grad-c3"
+                value="#0f3460"
+                oninput="applyGrad()"
+              />
+            </div>
+            <div class="srow">
+              <label>Burchak</label>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value="135"
+                id="grad-angle"
+                oninput="
+                  applyGrad();
+                  document.getElementById('grad-av').textContent =
+                    this.value + '°';
+                "
+              />
+              <span class="sv" id="grad-av">135°</span>
+            </div>
+          </div>
+
+          <!-- Chizish -->
+          <div class="cs">
+            <div class="cl">Chizish / Naqsh</div>
+            <div class="drow">
+              <button class="dtb" id="dbtn" onclick="togDraw()">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"
+                  />
+                </svg>
+                Chizish
+              </button>
+              <button class="dtb" id="ebtn" onclick="togErase()">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"
+                  />
+                  <path d="M22 21H7" />
+                  <path d="m5 11 9 9" />
+                </svg>
+                O'chirg.
+              </button>
+              <button class="dtb" onclick="clrCanvas()">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                  />
+                </svg>
+                Tozalash
+              </button>
+            </div>
+            <div class="srow">
+              <label>Qalinlik</label>
+              <input
+                type="range"
+                min="1"
+                max="28"
+                value="4"
+                oninput="bSz = +this.value"
+              />
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 7px;
+              "
+            >
+              <span class="cm" style="margin: 0; white-space: nowrap"
+                >Rang:</span
+              >
+              <input
+                type="color"
+                id="bcol"
+                value="#f0c27f"
+                style="
+                  height: 26px;
+                  width: 36px;
+                  border: none;
+                  background: none;
+                  cursor: pointer;
+                  border-radius: 6px;
+                "
+              />
+              <div style="display: flex; gap: 4px; flex-wrap: wrap">
+                <div
+                  class="sw"
+                  style="background: #f0c27f; width: 18px; height: 18px"
+                  onclick="document.getElementById('bcol').value = '#f0c27f'"
+                ></div>
+                <div
+                  class="sw"
+                  style="background: #e94560; width: 18px; height: 18px"
+                  onclick="document.getElementById('bcol').value = '#e94560'"
+                ></div>
+                <div
+                  class="sw"
+                  style="background: #7ee8fa; width: 18px; height: 18px"
+                  onclick="document.getElementById('bcol').value = '#7ee8fa'"
+                ></div>
+                <div
+                  class="sw"
+                  style="background: #fff; width: 18px; height: 18px"
+                  onclick="document.getElementById('bcol').value = '#ffffff'"
+                ></div>
+                <div
+                  class="sw"
+                  style="background: #b5ead7; width: 18px; height: 18px"
+                  onclick="document.getElementById('bcol').value = '#b5ead7'"
+                ></div>
+                <div
+                  class="sw"
+                  style="background: #c3b1e1; width: 18px; height: 18px"
+                  onclick="document.getElementById('bcol').value = '#c3b1e1'"
+                ></div>
+              </div>
+            </div>
+
+            <div class="cl" style="margin-top: 10px">Tez naqsh</div>
+            <div class="crow">
+              <button class="chip" onclick="dPat('stars')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                >
+                  <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                  /></svg
+                >Yulduz
+              </button>
+              <button class="chip" onclick="dPat('dots')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="12" r="5" /></svg
+                >Nuqta
+              </button>
+              <button class="chip" onclick="dPat('lines')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                >
+                  <line x1="3" y1="12" x2="21" y2="12" /></svg
+                >Chiziq
+              </button>
+              <button class="chip" onclick="dPat('waves')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path d="M2 12c2-6 4-6 6 0s4 6 6 0 4-6 6 0" /></svg
+                >To'lqin
+              </button>
+              <button class="chip" onclick="dPat('border')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="1" /></svg
+                >Chegara
+              </button>
+              <button class="chip" onclick="dPat('diamonds')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 2l10 10-10 10L2 12z" /></svg
+                >Olmos
+              </button>
+              <button class="chip" onclick="dPat('grid')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" /></svg
+                >Katakcha
+              </button>
+              <button class="chip" onclick="dPat('zigzag')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="2,12 7,6 12,12 17,6 22,12" /></svg
+                >Zigzag
+              </button>
+              <button class="chip" onclick="dPat('circles')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <circle cx="7" cy="8" r="4" />
+                  <circle cx="17" cy="8" r="4" />
+                  <circle cx="7" cy="17" r="4" />
+                  <circle cx="17" cy="17" r="4" /></svg
+                >Doiralar
+              </button>
+              <button class="chip danger" onclick="clrCanvas()">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                  /></svg
+                >Tozalash
+              </button>
+            </div>
+          </div>
+
+          <!-- Stikerlar -->
+          <div class="cs">
+            <div class="cl">Stikerlar — bosing → qo'shiladi</div>
+            <div class="scats" id="scats"></div>
+            <div class="sgrid" id="sgrid"></div>
+          </div>
         </div>
       </div>
     </div>
-    <div style="display:flex;gap:8px;max-width:300px;width:100%">
-      <button class="btn" id="btn3d" onclick="tog3D(this)" title="3D ko'rinish" style="flex-shrink:0;padding:7px 14px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        3D
-      </button>
-      <button class="btn pri bfull" onclick="dlCover()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        PNG saqlash
-      </button>
-    </div>
-  </div>
 
-  <div class="ctrl">
-
-    <!-- Rang mavzusi -->
-    <div class="cs">
-      <div class="cl">Rang mavzusi</div>
-      <div class="tgrid">
-        <button class="tcard on" onclick="setPgTheme('kosmik',this)">
-          <div class="tprev">
-            <div style="flex:1;background:#0f0f1a"></div>
-            <div style="flex:1;background:#16213e"></div>
-            <div style="flex:1;background:#f0c27f"></div>
-            <div style="flex:1;background:#e94560"></div>
+    <!-- ══════ PAGE 2 · YOZISH ══════ -->
+    <div class="pg" id="pg-write">
+      <div class="write-row">
+        <div class="chsb">
+          <div class="chh">
+            <h3>Boblar</h3>
+            <div class="chh-acts">
+              <button class="btn" onclick="addCh()" title="Yangi bob">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Bob
+              </button>
+              <button
+                class="btn"
+                onclick="exportTXT()"
+                title="TXT yuklab olish"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                TXT
+              </button>
+              <button
+                class="btn"
+                onclick="exportJSON()"
+                title="Loyihani saqlash"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                JSON
+              </button>
+              <label
+                class="btn"
+                for="json-imp"
+                title="Loyihani yuklash"
+                style="cursor: pointer"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+              </label>
+              <input
+                type="file"
+                id="json-imp"
+                accept=".json"
+                style="display: none"
+                onchange="importJSON(event)"
+              />
+            </div>
           </div>
-          <span>Kosmik Ko'k</span>
-        </button>
-        <button class="tcard" onclick="setPgTheme('oltin',this)">
-          <div class="tprev">
-            <div style="flex:1;background:#0c0900"></div>
-            <div style="flex:1;background:#1c1500"></div>
-            <div style="flex:1;background:#d4a853"></div>
-            <div style="flex:1;background:#cc3333"></div>
+          <!-- Word count goal -->
+          <div class="wg-row">
+            <label>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                style="width: 11px; height: 11px"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Maqsad:
+              <input
+                type="number"
+                id="wg-inp"
+                placeholder="50000"
+                min="100"
+                max="2000000"
+                oninput="setWordGoal(this.value)"
+              />
+              so'z
+            </label>
+            <div class="wg-bar"><div id="wg-fill"></div></div>
           </div>
-          <span>Tun Oltin</span>
-        </button>
-        <button class="tcard" onclick="setPgTheme('binafsha',this)">
-          <div class="tprev">
-            <div style="flex:1;background:#0c0010"></div>
-            <div style="flex:1;background:#1a0028"></div>
-            <div style="flex:1;background:#c084fc"></div>
-            <div style="flex:1;background:#ff3d7f"></div>
+          <div class="chl" id="chl"></div>
+        </div>
+        <div class="wm">
+          <div class="wbar">
+            <span class="wlbl">Bob:</span>
+            <input
+              type="text"
+              id="ch-inp"
+              value="Birinchi bob"
+              oninput="updChT(this.value)"
+            />
+            <div class="wc" id="wc">0 so'z</div>
           </div>
-          <span>Sehrli Binafsha</span>
-        </button>
-        <button class="tcard" onclick="setPgTheme('yashil',this)">
-          <div class="tprev">
-            <div style="flex:1;background:#040c07"></div>
-            <div style="flex:1;background:#0c1c10"></div>
-            <div style="flex:1;background:#52d68a"></div>
-            <div style="flex:1;background:#ff5252"></div>
+          <div class="wbar2">
+            <button class="btn wfmt" onclick="fmt('bold')" title="Qalin">
+              <b>B</b>
+            </button>
+            <button class="btn wfmt" onclick="fmt('italic')" title="Kursiv">
+              <i>I</i>
+            </button>
+            <button class="btn wfmt" onclick="fmt('underline')" title="Tagiziq">
+              <u>U</u>
+            </button>
+            <div class="wdiv"></div>
+            <select
+              onchange="
+                fmtF(this.value);
+                this.value = '';
+              "
+              style="max-width: 130px"
+            >
+              <option value="">Shrift...</option>
+              <option value="Merriweather,serif">Merriweather</option>
+              <option value="'Playfair Display',serif">Playfair</option>
+              <option value="Nunito,sans-serif">Nunito</option>
+              <option value="Montserrat,sans-serif">Montserrat</option>
+              <option value="Lora,serif">Lora</option>
+              <option value="Raleway,sans-serif">Raleway</option>
+              <option value="Georgia,serif">Georgia</option>
+              <option value="Arial,sans-serif">Arial</option>
+              <option value="'Cormorant Garamond',serif">Cormorant</option>
+              <option value="'Dancing Script',cursive">Dancing Script</option>
+            </select>
+            <select
+              onchange="
+                fmtSz(this.value);
+                this.value = '';
+              "
+              style="max-width: 90px"
+            >
+              <option value="">O'lcham...</option>
+              <option value="2">Kichik</option>
+              <option value="3">O'rta</option>
+              <option value="4">Katta</option>
+              <option value="5">Juda katta</option>
+            </select>
           </div>
-          <span>O'rmon Yashil</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Muqova shablonlari -->
-    <div class="cs">
-      <div class="cl">Muqova shablonlari</div>
-      <div id="tpl-grid"></div>
-    </div>
-
-    <!-- Janr -->
-    <div class="cs">
-      <div class="cl">Janr shabloni</div>
-      <div class="ggrid" id="ggrid"></div>
-    </div>
-
-    <!-- Matn -->
-    <div class="cs">
-      <div class="cl">Matn</div>
-      <span class="cm">Kitob nomi</span>
-      <textarea id="i-title" rows="2">Kitob Nomi</textarea>
-      <span class="cm" style="margin-top:8px">Sarlavha / Janr</span>
-      <input type="text" id="i-sub" value="Sarlavha"/>
-      <span class="cm" style="margin-top:8px">Iqtibos</span>
-      <textarea id="i-quote" rows="2">Iqtibos yoki tavsif...</textarea>
-      <div class="r2" style="margin-top:8px">
-        <div><span class="cm">Muallif</span><input type="text" id="i-author" value="Muallif Ismi"/></div>
-        <div><span class="cm">Nashriyot</span><input type="text" id="i-pub" value="Nashriyot"/></div>
-      </div>
-    </div>
-
-    <!-- Fon mavzu -->
-    <div class="cs">
-      <div class="cl">Fon mavzusi</div>
-      <div class="crow" id="th-row">
-        <button class="chip on" onclick="setTheme('night',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Tun</button>
-        <button class="chip" onclick="setTheme('fire',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>Olov</button>
-        <button class="chip" onclick="setTheme('ocean',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>Okean</button>
-        <button class="chip" onclick="setTheme('forest',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12M4 12l8-8 8 8M4 17l8-8 8 8"/></svg>O'rmon</button>
-        <button class="chip" onclick="setTheme('gold',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>Oltin</button>
-        <button class="chip" onclick="setTheme('rose',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"/></svg>Atirgul</button>
-        <button class="chip" onclick="setTheme('purple',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.5V22h3.5L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/></svg>Sehrli</button>
-        <button class="chip" onclick="setTheme('mono',this)"><svg viewBox="0 0 24 24" fill="currentColor" opacity=".8"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Mono</button>
-      </div>
-    </div>
-
-    <!-- Matn rangi -->
-    <div class="cs">
-      <div class="cl">Matn rangi</div>
-      <div class="crow" id="tc-row">
-        <div class="sw on" style="background:#fff" onclick="setTC('#fff',this)"></div>
-        <div class="sw" style="background:#f0c27f" onclick="setTC('#f0c27f',this)"></div>
-        <div class="sw" style="background:#e94560" onclick="setTC('#e94560',this)"></div>
-        <div class="sw" style="background:#7ee8fa" onclick="setTC('#7ee8fa',this)"></div>
-        <div class="sw" style="background:#b5ead7" onclick="setTC('#b5ead7',this)"></div>
-        <div class="sw" style="background:#ffb7b2" onclick="setTC('#ffb7b2',this)"></div>
-        <div class="sw" style="background:#c3b1e1" onclick="setTC('#c3b1e1',this)"></div>
-        <div class="sw" style="background:#1a1a2e" onclick="setTC('#1a1a2e',this)"></div>
-        <input type="color" value="#ffffff" onchange="setTC(this.value,null)"
-          style="width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;padding:0"/>
-      </div>
-    </div>
-
-    <!-- Shrift — 16 ta -->
-    <div class="cs">
-      <div class="cl">Sarlavha shrifti</div>
-      <div class="crow" id="fc-row">
-        <button class="chip on"  style="font-family:'Playfair Display'"    onclick="setCF('Playfair Display,serif',this)">Playfair</button>
-        <button class="chip"     style="font-family:'Dancing Script'"      onclick="setCF('Dancing Script,cursive',this)">Dancing</button>
-        <button class="chip"     style="font-family:'Cinzel'"              onclick="setCF('Cinzel,serif',this)">Cinzel</button>
-        <button class="chip"     style="font-family:'Montserrat'"          onclick="setCF('Montserrat,sans-serif',this)">Montserrat</button>
-        <button class="chip"     style="font-family:'Lobster'"             onclick="setCF('Lobster,cursive',this)">Lobster</button>
-        <button class="chip"     style="font-family:'Oswald'"              onclick="setCF('Oswald,sans-serif',this)">Oswald</button>
-        <button class="chip"     style="font-family:'Abril Fatface'"       onclick="setCF('Abril Fatface,cursive',this)">Abril</button>
-        <button class="chip"     style="font-family:'Pacifico'"            onclick="setCF('Pacifico,cursive',this)">Pacifico</button>
-        <button class="chip"     style="font-family:'Raleway'"             onclick="setCF('Raleway,sans-serif',this)">Raleway</button>
-        <button class="chip"     style="font-family:'Lora'"                onclick="setCF('Lora,serif',this)">Lora</button>
-        <button class="chip"     style="font-family:'Bebas Neue'"          onclick="setCF('Bebas Neue,cursive',this)">Bebas</button>
-        <button class="chip"     style="font-family:'Righteous'"           onclick="setCF('Righteous,cursive',this)">Righteous</button>
-        <button class="chip"     style="font-family:'Satisfy'"             onclick="setCF('Satisfy,cursive',this)">Satisfy</button>
-        <button class="chip"     style="font-family:'Cormorant Garamond'"  onclick="setCF('Cormorant Garamond,serif',this)">Cormorant</button>
-        <button class="chip"     style="font-family:'Permanent Marker'"    onclick="setCF('Permanent Marker,cursive',this)">Marker</button>
-        <button class="chip"     style="font-family:'Great Vibes'"         onclick="setCF('Great Vibes,cursive',this)">Great Vibes</button>
-      </div>
-    </div>
-
-    <!-- O'lcham -->
-    <div class="cs">
-      <div class="cl">Sarlavha o'lchami</div>
-      <div class="srow">
-        <label>O'lcham</label>
-        <input type="range" min="14" max="52" value="30"
-          oninput="document.getElementById('cv-title').style.fontSize=this.value+'px';
-                   document.getElementById('fsv').textContent=this.value;scheduleSave()"/>
-        <span class="sv" id="fsv">30</span>
-      </div>
-      <div class="srow">
-        <label>Matn soya</label>
-        <input type="range" min="0" max="24" value="8" id="shadow-sl"
-          oninput="setCvShadow(this.value);document.getElementById('shadow-v').textContent=this.value"/>
-        <span class="sv" id="shadow-v">8</span>
-      </div>
-    </div>
-
-    <!-- Fon rasmi -->
-    <div class="cs">
-      <div class="cl">Fon rasmi</div>
-      <label class="uplab" for="img-up">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Rasm yuklash (JPG/PNG)
-      </label>
-      <input type="file" id="img-up" accept="image/*" onchange="loadBg(event)"/>
-      <div class="srow">
-        <label>Shaffoflik</label>
-        <input type="range" min="0" max="100" value="35"
-          oninput="document.getElementById('cbg').style.opacity=this.value/100"/>
-      </div>
-    </div>
-
-    <!-- Custom gradient -->
-    <div class="cs">
-      <div class="cl">Custom Gradient</div>
-      <div class="grad-pickers">
-        <label>Rang 1</label>
-        <input type="color" id="grad-c1" value="#1a1a2e" oninput="applyGrad()"/>
-        <label>Rang 2</label>
-        <input type="color" id="grad-c2" value="#16213e" oninput="applyGrad()"/>
-        <label>Rang 3</label>
-        <input type="color" id="grad-c3" value="#0f3460" oninput="applyGrad()"/>
-      </div>
-      <div class="srow">
-        <label>Burchak</label>
-        <input type="range" min="0" max="360" value="135" id="grad-angle" oninput="applyGrad();document.getElementById('grad-av').textContent=this.value+'°'"/>
-        <span class="sv" id="grad-av">135°</span>
-      </div>
-    </div>
-
-    <!-- Chizish -->
-    <div class="cs">
-      <div class="cl">Chizish / Naqsh</div>
-      <div class="drow">
-        <button class="dtb" id="dbtn" onclick="togDraw()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-          Chizish
-        </button>
-        <button class="dtb" id="ebtn" onclick="togErase()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
-          O'chirg.
-        </button>
-        <button class="dtb" onclick="clrCanvas()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-          Tozalash
-        </button>
-      </div>
-      <div class="srow">
-        <label>Qalinlik</label>
-        <input type="range" min="1" max="28" value="4" oninput="bSz=+this.value"/>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:7px">
-        <span class="cm" style="margin:0;white-space:nowrap">Rang:</span>
-        <input type="color" id="bcol" value="#f0c27f"
-          style="height:26px;width:36px;border:none;background:none;cursor:pointer;border-radius:6px"/>
-        <div style="display:flex;gap:4px;flex-wrap:wrap">
-          <div class="sw" style="background:#f0c27f;width:18px;height:18px" onclick="document.getElementById('bcol').value='#f0c27f'"></div>
-          <div class="sw" style="background:#e94560;width:18px;height:18px" onclick="document.getElementById('bcol').value='#e94560'"></div>
-          <div class="sw" style="background:#7ee8fa;width:18px;height:18px" onclick="document.getElementById('bcol').value='#7ee8fa'"></div>
-          <div class="sw" style="background:#fff;width:18px;height:18px" onclick="document.getElementById('bcol').value='#ffffff'"></div>
-          <div class="sw" style="background:#b5ead7;width:18px;height:18px" onclick="document.getElementById('bcol').value='#b5ead7'"></div>
-          <div class="sw" style="background:#c3b1e1;width:18px;height:18px" onclick="document.getElementById('bcol').value='#c3b1e1'"></div>
+          <div class="wwrap">
+            <div
+              class="wpage"
+              id="wed"
+              contenteditable="true"
+              data-ph="Bu yerda yozishni boshlang..."
+              oninput="onEdIn()"
+              spellcheck="false"
+            ></div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div class="cl" style="margin-top:10px">Tez naqsh</div>
-      <div class="crow">
-        <button class="chip" onclick="dPat('stars')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Yulduz</button>
-        <button class="chip" onclick="dPat('dots')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg>Nuqta</button>
-        <button class="chip" onclick="dPat('lines')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/></svg>Chiziq</button>
-        <button class="chip" onclick="dPat('waves')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M2 12c2-6 4-6 6 0s4 6 6 0 4-6 6 0"/></svg>To'lqin</button>
-        <button class="chip" onclick="dPat('border')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>Chegara</button>
-        <button class="chip" onclick="dPat('diamonds')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M12 2l10 10-10 10L2 12z"/></svg>Olmos</button>
-        <button class="chip" onclick="dPat('grid')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Katakcha</button>
-        <button class="chip" onclick="dPat('zigzag')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,12 7,6 12,12 17,6 22,12"/></svg>Zigzag</button>
-        <button class="chip" onclick="dPat('circles')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="7" cy="8" r="4"/><circle cx="17" cy="8" r="4"/><circle cx="7" cy="17" r="4"/><circle cx="17" cy="17" r="4"/></svg>Doiralar</button>
-        <button class="chip danger" onclick="clrCanvas()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Tozalash</button>
+    <!-- ══════ PAGE 3 · DIZAYN ══════ -->
+    <div class="pg" id="pg-design">
+      <div class="des-row">
+        <div class="dctrl">
+          <div class="cl" style="font-size: 0.82rem">Ichki sahifa dizayni</div>
+
+          <div class="cs">
+            <div class="cl">Asosiy shrift</div>
+            <div class="crow" id="df-row">
+              <button
+                class="chip on"
+                onclick="
+                  dsp('fontFamily', '\'Merriweather\',serif', this, 'df-row')
+                "
+              >
+                Merriweather
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp(
+                    'fontFamily',
+                    '\'Playfair Display\',serif',
+                    this,
+                    'df-row',
+                  )
+                "
+              >
+                Playfair
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('fontFamily', '\'Nunito\',sans-serif', this, 'df-row')
+                "
+              >
+                Nunito
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('fontFamily', '\'Montserrat\',sans-serif', this, 'df-row')
+                "
+              >
+                Montserrat
+              </button>
+              <button
+                class="chip"
+                onclick="dsp('fontFamily', 'Lora,serif', this, 'df-row')"
+              >
+                Lora
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('fontFamily', 'Raleway,sans-serif', this, 'df-row')
+                "
+              >
+                Raleway
+              </button>
+              <button
+                class="chip"
+                onclick="dsp('fontFamily', 'Georgia,serif', this, 'df-row')"
+              >
+                Georgia
+              </button>
+              <button
+                class="chip"
+                onclick="dsp('fontFamily', 'Arial,sans-serif', this, 'df-row')"
+              >
+                Arial
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp(
+                    'fontFamily',
+                    '\'Cormorant Garamond\',serif',
+                    this,
+                    'df-row',
+                  )
+                "
+              >
+                Cormorant
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp(
+                    'fontFamily',
+                    '\'Dancing Script\',cursive',
+                    this,
+                    'df-row',
+                  )
+                "
+              >
+                Dancing
+              </button>
+            </div>
+          </div>
+
+          <div class="cs">
+            <div class="cl">O'lcham va interval</div>
+            <div class="srow">
+              <label>Harf o'lchami</label
+              ><input
+                type="range"
+                min="12"
+                max="24"
+                value="16"
+                oninput="
+                  dsv('fontSize', this.value + 'px');
+                  this.nextElementSibling.textContent = this.value;
+                "
+              /><span class="sv">16</span>
+            </div>
+            <div class="srow">
+              <label>Satr balandligi</label
+              ><input
+                type="range"
+                min="1"
+                max="3"
+                step=".1"
+                value="1.8"
+                oninput="
+                  dsv('lineHeight', this.value);
+                  this.nextElementSibling.textContent = this.value;
+                "
+              /><span class="sv">1.8</span>
+            </div>
+            <div class="srow">
+              <label>Harf oralig'i</label
+              ><input
+                type="range"
+                min="-1"
+                max="5"
+                step=".5"
+                value="0"
+                oninput="
+                  dsv('letterSpacing', this.value + 'px');
+                  this.nextElementSibling.textContent = this.value;
+                "
+              /><span class="sv">0</span>
+            </div>
+          </div>
+
+          <div class="cs">
+            <div class="cl">Tekislash</div>
+            <div class="crow" id="da-row">
+              <button
+                class="chip on"
+                onclick="dsp('textAlign', 'left', this, 'da-row')"
+              >
+                ◀ Chap
+              </button>
+              <button
+                class="chip"
+                onclick="dsp('textAlign', 'center', this, 'da-row')"
+              >
+                ▬ Markaz
+              </button>
+              <button
+                class="chip"
+                onclick="dsp('textAlign', 'right', this, 'da-row')"
+              >
+                ▶ O'ng
+              </button>
+              <button
+                class="chip"
+                onclick="dsp('textAlign', 'justify', this, 'da-row')"
+              >
+                ≡ To'la
+              </button>
+            </div>
+          </div>
+
+          <div class="cs">
+            <div class="cl">Matn rangi</div>
+            <div class="crow">
+              <div
+                class="sw on"
+                style="background: #e8e8f0"
+                onclick="
+                  dsv('color', '#e8e8f0');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #fff"
+                onclick="
+                  dsv('color', '#fff');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #f0c27f"
+                onclick="
+                  dsv('color', '#f0c27f');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #7ee8fa"
+                onclick="
+                  dsv('color', '#7ee8fa');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #222"
+                onclick="
+                  dsv('color', '#222');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #1a1a2e"
+                onclick="
+                  dsv('color', '#1a1a2e');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <input
+                type="color"
+                value="#e8e8f0"
+                onchange="dsv('color', this.value)"
+                style="
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 50%;
+                  border: none;
+                  cursor: pointer;
+                  padding: 0;
+                "
+              />
+            </div>
+          </div>
+
+          <div class="cs">
+            <div class="cl">Sahifa rangi</div>
+            <div class="crow">
+              <div
+                class="sw on"
+                style="background: #1e1e2e"
+                onclick="
+                  dsv('pageColor', '#1e1e2e');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #fff"
+                onclick="
+                  dsv('pageColor', '#fff');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #fef9ef"
+                onclick="
+                  dsv('pageColor', '#fef9ef');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #f5f0e8"
+                onclick="
+                  dsv('pageColor', '#f5f0e8');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #0d1b2a"
+                onclick="
+                  dsv('pageColor', '#0d1b2a');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <div
+                class="sw"
+                style="background: #0a0a0a"
+                onclick="
+                  dsv('pageColor', '#0a0a0a');
+                  acsw(this, this.parentElement);
+                "
+              ></div>
+              <input
+                type="color"
+                value="#1e1e2e"
+                onchange="dsv('pageColor', this.value)"
+                style="
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 50%;
+                  border: none;
+                  cursor: pointer;
+                  padding: 0;
+                "
+              />
+            </div>
+          </div>
+
+          <div class="cs">
+            <div class="cl">Bob sarlavhasi shrifti</div>
+            <div class="crow" id="dh-row">
+              <button
+                class="chip on"
+                onclick="
+                  dsp('titleFont', '\'Playfair Display\',serif', this, 'dh-row')
+                "
+              >
+                Playfair
+              </button>
+              <button
+                class="chip"
+                onclick="dsp('titleFont', '\'Cinzel\',serif', this, 'dh-row')"
+              >
+                Cinzel
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('titleFont', '\'Dancing Script\',cursive', this, 'dh-row')
+                "
+              >
+                Dancing
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('titleFont', '\'Oswald\',sans-serif', this, 'dh-row')
+                "
+              >
+                Oswald
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('titleFont', '\'Lobster\',cursive', this, 'dh-row')
+                "
+              >
+                Lobster
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('titleFont', '\'Abril Fatface\',cursive', this, 'dh-row')
+                "
+              >
+                Abril
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('titleFont', '\'Bebas Neue\',cursive', this, 'dh-row')
+                "
+              >
+                Bebas
+              </button>
+              <button
+                class="chip"
+                onclick="
+                  dsp('titleFont', '\'Great Vibes\',cursive', this, 'dh-row')
+                "
+              >
+                Great Vibes
+              </button>
+            </div>
+          </div>
+
+          <div class="cs">
+            <div class="cl">Tez uslub</div>
+            <div class="crow">
+              <button class="chip" onclick="apStl('classic')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="9" y1="13" x2="15" y2="13" />
+                  <line x1="9" y1="17" x2="12" y2="17" /></svg
+                >Klassik
+              </button>
+              <button class="chip" onclick="apStl('modern')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon
+                    points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+                  /></svg
+                >Zamonaviy
+              </button>
+              <button class="chip" onclick="apStl('elegant')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <circle cx="12" cy="12" r="3" />
+                  <path
+                    d="M12 2v3M12 19v3M2 12h3M19 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"
+                  /></svg
+                >Nafis
+              </button>
+              <button class="chip" onclick="apStl('dark')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <path
+                    d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                  /></svg
+                >Qora
+              </button>
+              <button class="chip" onclick="apStl('light')">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <circle cx="12" cy="12" r="4" />
+                  <path
+                    d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+                  /></svg
+                >Yorug'
+              </button>
+            </div>
+          </div>
+
+          <button class="btn pri bfull" onclick="apDes()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Yozish sahifasiga qo'llash
+          </button>
+        </div>
+
+        <div class="dpa">
+          <div class="dpg" id="dpg">
+            <div class="dph2" id="dp-h">Birinchi bob</div>
+            <div class="dpp" id="dp-b">
+              Bu yerda kitobingizning matnini ko'rasiz. "Yozish" sahifasida
+              yozgan matnlaringiz shu yerda ko'rinadi. Shrift, rang va boshqa
+              dizayn sozlamalarini o'zgartirib, kitobingizni chiroyli
+              ko'rinishga keltiring.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Stikerlar -->
-    <div class="cs">
-      <div class="cl">Stikerlar — bosing → qo'shiladi</div>
-      <div class="scats" id="scats"></div>
-      <div class="sgrid" id="sgrid"></div>
-    </div>
-
-  </div>
-</div>
-</div>
-
-<!-- ══════ PAGE 2 · YOZISH ══════ -->
-<div class="pg" id="pg-write">
-<div class="write-row">
-  <div class="chsb">
-    <div class="chh">
-      <h3>Boblar</h3>
-      <div class="chh-acts">
-        <button class="btn" onclick="addCh()" title="Yangi bob">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Bob
-        </button>
-        <button class="btn" onclick="exportTXT()" title="TXT yuklab olish">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          TXT
-        </button>
-        <button class="btn" onclick="exportJSON()" title="Loyihani saqlash">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          JSON
-        </button>
-        <label class="btn" for="json-imp" title="Loyihani yuklash" style="cursor:pointer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        </label>
-        <input type="file" id="json-imp" accept=".json" style="display:none" onchange="importJSON(event)"/>
-      </div>
-    </div>
-    <!-- Word count goal -->
-    <div class="wg-row">
-      <label>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Maqsad:
-        <input type="number" id="wg-inp" placeholder="50000" min="100" max="2000000"
-          oninput="setWordGoal(this.value)"/>
-        so'z
-      </label>
-      <div class="wg-bar"><div id="wg-fill"></div></div>
-    </div>
-    <div class="chl" id="chl"></div>
-  </div>
-  <div class="wm">
-    <div class="wbar">
-      <span class="wlbl">Bob:</span>
-      <input type="text" id="ch-inp" value="Birinchi bob" oninput="updChT(this.value)"/>
-      <div class="wc" id="wc">0 so'z</div>
-    </div>
-    <div class="wbar2">
-      <button class="btn wfmt" onclick="fmt('bold')" title="Qalin"><b>B</b></button>
-      <button class="btn wfmt" onclick="fmt('italic')" title="Kursiv"><i>I</i></button>
-      <button class="btn wfmt" onclick="fmt('underline')" title="Tagiziq"><u>U</u></button>
-      <div class="wdiv"></div>
-      <select onchange="fmtF(this.value);this.value=''" style="max-width:130px">
-        <option value="">Shrift...</option>
-        <option value="Merriweather,serif">Merriweather</option>
-        <option value="'Playfair Display',serif">Playfair</option>
-        <option value="Nunito,sans-serif">Nunito</option>
-        <option value="Montserrat,sans-serif">Montserrat</option>
-        <option value="Lora,serif">Lora</option>
-        <option value="Raleway,sans-serif">Raleway</option>
-        <option value="Georgia,serif">Georgia</option>
-        <option value="Arial,sans-serif">Arial</option>
-        <option value="'Cormorant Garamond',serif">Cormorant</option>
-        <option value="'Dancing Script',cursive">Dancing Script</option>
-      </select>
-      <select onchange="fmtSz(this.value);this.value=''" style="max-width:90px">
-        <option value="">O'lcham...</option>
-        <option value="2">Kichik</option>
-        <option value="3">O'rta</option>
-        <option value="4">Katta</option>
-        <option value="5">Juda katta</option>
-      </select>
-    </div>
-    <div class="wwrap">
-      <div class="wpage" id="wed" contenteditable="true"
-        data-ph="Bu yerda yozishni boshlang..."
-        oninput="onEdIn()" spellcheck="false"></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ══════ PAGE 3 · DIZAYN ══════ -->
-<div class="pg" id="pg-design">
-<div class="des-row">
-  <div class="dctrl">
-    <div class="cl" style="font-size:.82rem">Ichki sahifa dizayni</div>
-
-    <div class="cs">
-      <div class="cl">Asosiy shrift</div>
-      <div class="crow" id="df-row">
-        <button class="chip on" onclick="dsp('fontFamily',&quot;'Merriweather',serif&quot;,this,'df-row')">Merriweather</button>
-        <button class="chip"    onclick="dsp('fontFamily',&quot;'Playfair Display',serif&quot;,this,'df-row')">Playfair</button>
-        <button class="chip"    onclick="dsp('fontFamily',&quot;'Nunito',sans-serif&quot;,this,'df-row')">Nunito</button>
-        <button class="chip"    onclick="dsp('fontFamily',&quot;'Montserrat',sans-serif&quot;,this,'df-row')">Montserrat</button>
-        <button class="chip"    onclick="dsp('fontFamily','Lora,serif',this,'df-row')">Lora</button>
-        <button class="chip"    onclick="dsp('fontFamily','Raleway,sans-serif',this,'df-row')">Raleway</button>
-        <button class="chip"    onclick="dsp('fontFamily','Georgia,serif',this,'df-row')">Georgia</button>
-        <button class="chip"    onclick="dsp('fontFamily','Arial,sans-serif',this,'df-row')">Arial</button>
-        <button class="chip"    onclick="dsp('fontFamily',&quot;'Cormorant Garamond',serif&quot;,this,'df-row')">Cormorant</button>
-        <button class="chip"    onclick="dsp('fontFamily',&quot;'Dancing Script',cursive&quot;,this,'df-row')">Dancing</button>
-      </div>
-    </div>
-
-    <div class="cs">
-      <div class="cl">O'lcham va interval</div>
-      <div class="srow"><label>Harf o'lchami</label><input type="range" min="12" max="24" value="16" oninput="dsv('fontSize',this.value+'px');this.nextElementSibling.textContent=this.value"/><span class="sv">16</span></div>
-      <div class="srow"><label>Satr balandligi</label><input type="range" min="1" max="3" step=".1" value="1.8" oninput="dsv('lineHeight',this.value);this.nextElementSibling.textContent=this.value"/><span class="sv">1.8</span></div>
-      <div class="srow"><label>Harf oralig'i</label><input type="range" min="-1" max="5" step=".5" value="0" oninput="dsv('letterSpacing',this.value+'px');this.nextElementSibling.textContent=this.value"/><span class="sv">0</span></div>
-    </div>
-
-    <div class="cs">
-      <div class="cl">Tekislash</div>
-      <div class="crow" id="da-row">
-        <button class="chip on" onclick="dsp('textAlign','left',this,'da-row')">◀ Chap</button>
-        <button class="chip"    onclick="dsp('textAlign','center',this,'da-row')">▬ Markaz</button>
-        <button class="chip"    onclick="dsp('textAlign','right',this,'da-row')">▶ O'ng</button>
-        <button class="chip"    onclick="dsp('textAlign','justify',this,'da-row')">≡ To'la</button>
-      </div>
-    </div>
-
-    <div class="cs">
-      <div class="cl">Matn rangi</div>
-      <div class="crow">
-        <div class="sw on" style="background:#e8e8f0" onclick="dsv('color','#e8e8f0');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#fff" onclick="dsv('color','#fff');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#f0c27f" onclick="dsv('color','#f0c27f');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#7ee8fa" onclick="dsv('color','#7ee8fa');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#222" onclick="dsv('color','#222');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#1a1a2e" onclick="dsv('color','#1a1a2e');acsw(this,this.parentElement)"></div>
-        <input type="color" value="#e8e8f0" onchange="dsv('color',this.value)" style="width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;padding:0"/>
-      </div>
-    </div>
-
-    <div class="cs">
-      <div class="cl">Sahifa rangi</div>
-      <div class="crow">
-        <div class="sw on" style="background:#1e1e2e" onclick="dsv('pageColor','#1e1e2e');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#fff" onclick="dsv('pageColor','#fff');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#fef9ef" onclick="dsv('pageColor','#fef9ef');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#f5f0e8" onclick="dsv('pageColor','#f5f0e8');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#0d1b2a" onclick="dsv('pageColor','#0d1b2a');acsw(this,this.parentElement)"></div>
-        <div class="sw" style="background:#0a0a0a" onclick="dsv('pageColor','#0a0a0a');acsw(this,this.parentElement)"></div>
-        <input type="color" value="#1e1e2e" onchange="dsv('pageColor',this.value)" style="width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;padding:0"/>
-      </div>
-    </div>
-
-    <div class="cs">
-      <div class="cl">Bob sarlavhasi shrifti</div>
-      <div class="crow" id="dh-row">
-        <button class="chip on" onclick="dsp('titleFont',&quot;'Playfair Display',serif&quot;,this,'dh-row')">Playfair</button>
-        <button class="chip"    onclick="dsp('titleFont',&quot;'Cinzel',serif&quot;,this,'dh-row')">Cinzel</button>
-        <button class="chip"    onclick="dsp('titleFont',&quot;'Dancing Script',cursive&quot;,this,'dh-row')">Dancing</button>
-        <button class="chip"    onclick="dsp('titleFont',&quot;'Oswald',sans-serif&quot;,this,'dh-row')">Oswald</button>
-        <button class="chip"    onclick="dsp('titleFont',&quot;'Lobster',cursive&quot;,this,'dh-row')">Lobster</button>
-        <button class="chip"    onclick="dsp('titleFont',&quot;'Abril Fatface',cursive&quot;,this,'dh-row')">Abril</button>
-        <button class="chip"    onclick="dsp('titleFont',&quot;'Bebas Neue',cursive&quot;,this,'dh-row')">Bebas</button>
-        <button class="chip"    onclick="dsp('titleFont',&quot;'Great Vibes',cursive&quot;,this,'dh-row')">Great Vibes</button>
-      </div>
-    </div>
-
-    <div class="cs">
-      <div class="cl">Tez uslub</div>
-      <div class="crow">
-        <button class="chip" onclick="apStl('classic')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>Klassik</button>
-        <button class="chip" onclick="apStl('modern')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Zamonaviy</button>
-        <button class="chip" onclick="apStl('elegant')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"/></svg>Nafis</button>
-        <button class="chip" onclick="apStl('dark')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Qora</button>
-        <button class="chip" onclick="apStl('light')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Yorug'</button>
-      </div>
-    </div>
-
-    <button class="btn pri bfull" onclick="apDes()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      Yozish sahifasiga qo'llash
-    </button>
-  </div>
-
-  <div class="dpa">
-    <div class="dpg" id="dpg">
-      <div class="dph2" id="dp-h">Birinchi bob</div>
-      <div class="dpp" id="dp-b">Bu yerda kitobingizning matnini ko'rasiz. "Yozish" sahifasida yozgan matnlaringiz shu yerda ko'rinadi. Shrift, rang va boshqa dizayn sozlamalarini o'zgartirib, kitobingizni chiroyli ko'rinishga keltiring.</div>
-    </div>
-  </div>
-</div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="script.js"></script>
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
