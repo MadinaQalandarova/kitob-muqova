@@ -6,8 +6,21 @@
 <title>Kitob Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Dancing+Script:wght@700&family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Lobster&family=Oswald:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;700&family=Abril+Fatface&family=Pacifico&family=Raleway:wght@300;400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Righteous&family=Satisfy&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=Great+Vibes&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="style.css"/>
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 </head>
 <body>
+
+<!-- ═══ LOADING OVERLAY ═══ -->
+<div id="ks-loading">
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f0c27f" stroke-width="2" stroke-linecap="round">
+    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+  </svg>
+  <span>Yuklanmoqda...</span>
+</div>
 
 <!-- ═══ NAV ═══ -->
 <nav>
@@ -29,7 +42,22 @@
       Dizayn
     </button>
   </div>
-  <div style="width:100px"></div>
+  <div class="nav-user">
+    <div class="nav-undo">
+      <button class="btn" id="undo-btn" onclick="undoH()" title="Bekor qilish (Ctrl+Z)" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+      </button>
+      <button class="btn" id="redo-btn" onclick="redoH()" title="Qayta (Ctrl+Y)" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg>
+      </button>
+    </div>
+    <div class="nav-av" id="nav-av">?</div>
+    <span class="nav-nm" id="nav-nm"></span>
+    <button class="btn" onclick="doSignOut()" style="padding:5px 9px;font-size:.7rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Chiqish
+    </button>
+  </div>
 </nav>
 
 <!-- ══════ PAGE 1 · MUQOVA ══════ -->
@@ -117,6 +145,12 @@
       </div>
     </div>
 
+    <!-- Muqova shablonlari -->
+    <div class="cs">
+      <div class="cl">Muqova shablonlari</div>
+      <div id="tpl-grid"></div>
+    </div>
+
     <!-- Janr -->
     <div class="cs">
       <div class="cl">Janr shabloni</div>
@@ -200,8 +234,14 @@
         <label>O'lcham</label>
         <input type="range" min="14" max="52" value="30"
           oninput="document.getElementById('cv-title').style.fontSize=this.value+'px';
-                   document.getElementById('fsv').textContent=this.value"/>
+                   document.getElementById('fsv').textContent=this.value;scheduleSave()"/>
         <span class="sv" id="fsv">30</span>
+      </div>
+      <div class="srow">
+        <label>Matn soya</label>
+        <input type="range" min="0" max="24" value="8" id="shadow-sl"
+          oninput="setCvShadow(this.value);document.getElementById('shadow-v').textContent=this.value"/>
+        <span class="sv" id="shadow-v">8</span>
       </div>
     </div>
 
@@ -217,6 +257,24 @@
         <label>Shaffoflik</label>
         <input type="range" min="0" max="100" value="35"
           oninput="document.getElementById('cbg').style.opacity=this.value/100"/>
+      </div>
+    </div>
+
+    <!-- Custom gradient -->
+    <div class="cs">
+      <div class="cl">Custom Gradient</div>
+      <div class="grad-pickers">
+        <label>Rang 1</label>
+        <input type="color" id="grad-c1" value="#1a1a2e" oninput="applyGrad()"/>
+        <label>Rang 2</label>
+        <input type="color" id="grad-c2" value="#16213e" oninput="applyGrad()"/>
+        <label>Rang 3</label>
+        <input type="color" id="grad-c3" value="#0f3460" oninput="applyGrad()"/>
+      </div>
+      <div class="srow">
+        <label>Burchak</label>
+        <input type="range" min="0" max="360" value="135" id="grad-angle" oninput="applyGrad();document.getElementById('grad-av').textContent=this.value+'°'"/>
+        <span class="sv" id="grad-av">135°</span>
       </div>
     </div>
 
@@ -287,10 +345,35 @@
   <div class="chsb">
     <div class="chh">
       <h3>Boblar</h3>
-      <button class="btn" style="padding:4px 8px;font-size:.71rem" onclick="addCh()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Bob
-      </button>
+      <div class="chh-acts">
+        <button class="btn" onclick="addCh()" title="Yangi bob">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Bob
+        </button>
+        <button class="btn" onclick="exportTXT()" title="TXT yuklab olish">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          TXT
+        </button>
+        <button class="btn" onclick="exportJSON()" title="Loyihani saqlash">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          JSON
+        </button>
+        <label class="btn" for="json-imp" title="Loyihani yuklash" style="cursor:pointer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </label>
+        <input type="file" id="json-imp" accept=".json" style="display:none" onchange="importJSON(event)"/>
+      </div>
+    </div>
+    <!-- Word count goal -->
+    <div class="wg-row">
+      <label>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Maqsad:
+        <input type="number" id="wg-inp" placeholder="50000" min="100" max="2000000"
+          oninput="setWordGoal(this.value)"/>
+        so'z
+      </label>
+      <div class="wg-bar"><div id="wg-fill"></div></div>
     </div>
     <div class="chl" id="chl"></div>
   </div>
