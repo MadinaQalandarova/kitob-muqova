@@ -244,6 +244,7 @@
         </div>
 
         <div class="ctrl">
+          <div class="ctrl-inner">
           <!-- Rang mavzusi -->
           <div class="cs">
             <div class="cl">Rang mavzusi</div>
@@ -972,6 +973,20 @@
             <div class="scats" id="scats"></div>
             <div class="sgrid" id="sgrid"></div>
           </div>
+
+          </div><!-- /ctrl-inner -->
+          <!-- SAQLASH -->
+          <div class="save-bar">
+            <button class="btn pri bfull" id="save-cover-btn" onclick="doSave(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span class="save-txt">Saqlash</span>
+              <span class="save-spin"></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1091,6 +1106,17 @@
             <div class="wg-bar"><div id="wg-fill"></div></div>
           </div>
           <div class="chl" id="chl"></div>
+          <div class="save-bar">
+            <button class="btn pri bfull" id="save-write-btn" onclick="doSave(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span class="save-txt">Saqlash</span>
+              <span class="save-spin"></span>
+            </button>
+          </div>
         </div>
         <div class="wm">
           <div class="wbar">
@@ -1165,6 +1191,7 @@
     <div class="pg" id="pg-design">
       <div class="des-row">
         <div class="dctrl">
+          <div class="dctrl-inner">
           <div class="cl" style="font-size: 0.82rem">Ichki sahifa dizayni</div>
 
           <div class="cs">
@@ -1616,19 +1643,24 @@
             </div>
           </div>
 
-          <button class="btn pri bfull" onclick="apDes()">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+          <button class="btn bfull" onclick="apDes()" style="margin-bottom:0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
             Yozish sahifasiga qo'llash
           </button>
+          </div><!-- /dctrl-inner -->
+          <div class="save-bar">
+            <button class="btn pri bfull" id="save-design-btn" onclick="doSave(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span class="save-txt">Saqlash</span>
+              <span class="save-spin"></span>
+            </button>
+          </div>
         </div>
 
         <div class="dpa">

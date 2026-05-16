@@ -32,7 +32,8 @@ nav{
 .pg{display:none;padding-top:var(--nav);min-height:100vh}.pg.on{display:block}
 .row{display:flex;height:calc(100vh - var(--nav));overflow:hidden}
 .prev{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#08080f;overflow:auto;padding:28px;gap:14px}
-.ctrl{width:315px;background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.ctrl{width:315px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.ctrl-inner{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
 
 /* ── BOOK 3D SCENE ── */
 .book-scene{flex-shrink:0;perspective:900px;perspective-origin:60% 50%}
@@ -267,7 +268,8 @@ input[type=range]::-moz-range-thumb{
 
 /* ── DESIGN ── */
 .des-row{display:flex;height:calc(100vh - var(--nav))}
-.dctrl{width:285px;background:var(--panel);border-right:1px solid var(--border);overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.dctrl{width:285px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.dctrl-inner{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
 .dpa{flex:1;overflow-y:auto;padding:34px;background:#08080f;display:flex;justify-content:center;align-items:flex-start}
 .dpg{width:100%;max-width:560px;border-radius:4px;padding:52px;min-height:540px;box-shadow:0 4px 30px rgba(0,0,0,.5);background:#1e1e2e;transition:all .3s}
 .dph2{font-family:'Playfair Display',serif;font-size:1.65rem;margin-bottom:24px;color:var(--accent)}
@@ -323,3 +325,25 @@ input[type=range]::-moz-range-thumb{
 .chh-acts{display:flex;gap:4px;flex-wrap:wrap}
 .chh-acts .btn{padding:3px 7px;font-size:.67rem;gap:3px}
 .chh-acts .btn svg{width:11px;height:11px}
+
+/* ── SAVE BAR ── */
+.save-bar{
+  padding:12px;
+  background:var(--panel);
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.save-bar .btn{font-size:.82rem;padding:11px;letter-spacing:.3px;justify-content:center;gap:7px}
+.save-bar .btn svg{width:15px;height:15px}
+
+/* saving state */
+.save-spin{
+  display:none;width:15px;height:15px;
+  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  border-radius:50%;animation:sv-spin .6s linear infinite;flex-shrink:0
+}
+.save-txt{display:inline}
+.btn.saving .save-spin{display:inline-block}
+.btn.saving .save-txt{display:none}
+.btn.saving svg{display:none}
+@keyframes sv-spin{to{transform:rotate(360deg)}}
