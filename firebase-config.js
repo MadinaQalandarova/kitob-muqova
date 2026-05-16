@@ -1,19 +1,14 @@
-// ══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 //  Kitob Studio — Firebase Configuration
-//  Setup qilish uchun:
-//  1. https://console.firebase.google.com — yangi project yarating
-//  2. Project sozlamalari → Web app qo'shing
-//  3. Authentication → Email/Password va Google yoqing
-//  4. Firestore Database → "test mode"da yarating
-//  5. Quyidagi qiymatlarni o'z loyihangiz bilan almashtiring
-// ══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 const firebaseConfig = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyATm04fB8x7ixwcj6TaF2DtY9D3e-c-Pz0",
+  authDomain:        "kitob-studio.firebaseapp.com",
+  projectId:         "kitob-studio",
+  storageBucket:     "kitob-studio.firebasestorage.app",
+  messagingSenderId: "572300481334",
+  appId:             "1:572300481334:web:42dbbed4f7673507885997",
+  measurementId:     "G-6N3EB2W12Y"
 };
 
 firebase.initializeApp(firebaseConfig);
